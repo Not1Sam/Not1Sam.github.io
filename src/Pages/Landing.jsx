@@ -4,9 +4,6 @@ import "../Styles/Landing.css"
 const Landing = () =>{
     return(
         <>
-            
-
-
         </>
     );
 }
