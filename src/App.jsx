@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div className='page'>
-      <h1 id='txt'>Loading{dots}</h1>
+      <h1 id='txt'>Coming Soon{dots}</h1>
     </div>
   )
 }
