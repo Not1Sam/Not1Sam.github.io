@@ -1,0 +1,82 @@
+.admin-container {
+  padding: 4rem 0 6rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.admin-title {
+  font-size: clamp(3rem, 6vw, 4rem);
+  margin-bottom: 0.5rem;
+}
+
+.admin-subtitle {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.active-tab {
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-fluo);
+}
+
+.admin-box {
+  padding: 3rem;
+}
+
+.admin-form h2 {
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.admin-toast {
+  padding: 1rem;
+  border: 1px solid var(--accent-fluo);
+  border-radius: 4px;
+  background: rgba(204, 255, 0, 0.05);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

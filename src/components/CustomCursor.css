@@ -1,0 +1,47 @@
+/* Hide default cursor globally */
+body * {
+  cursor: none !important;
+}
+
+.cursor-dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-fluo);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--accent-fluo);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* When hovering over clickable items */
+.cursor-hover {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(204, 255, 0, 0.1);
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  /* Disable custom cursor on mobile touching */
+  .cursor-dot, .cursor-ring {
+    display: none;
+  }
+  body * {
+    cursor: auto !important;
+  }
+}

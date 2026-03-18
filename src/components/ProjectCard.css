@@ -1,0 +1,41 @@
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  height: 100%;
+  cursor: pointer;
+}
+
+.project-title {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  transition: color var(--transition);
+}
+
+.project-card:hover .project-title {
+  color: var(--text-secondary);
+}
+
+.project-description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.project-language {
+  background: transparent;
+  border: 1px solid var(--border-color);
+}

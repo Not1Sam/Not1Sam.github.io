@@ -1,0 +1,46 @@
+.theme-slider-container {
+  display: flex;
+  position: relative;
+  background-color: var(--border-color);
+  border-radius: 50px;
+  padding: 4px;
+  width: 210px; /* 3 options x 70px approx */
+}
+
+.theme-slider-thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  width: calc((100% - 8px) / 3);
+  background-color: var(--text-primary);
+  border-radius: 50px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+
+.theme-slider-btn {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  min-width: 66px;
+}
+
+.theme-slider-btn.active {
+  color: var(--bg-color); /* Contrast against the thumb */
+}
+
+.theme-slider-btn:not(.active):hover {
+  color: var(--text-primary);
+}
