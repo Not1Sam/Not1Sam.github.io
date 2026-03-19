@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Contact.css';
+import '../styles/Contact.css';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -30,7 +30,7 @@ const Contact = () => {
     <main className="contact-container">
       <section className="contact-content animate-fade-in" style={{ animationDelay: '0.1s' }}>
         <div className="section-header">
-          <h1 className="contact-title brand-font">Let's <br/>Talk.</h1>
+          <h1 className="contact-title brand-font">Let's Talk.</h1>
           <p className="contact-subtitle">Have a project in mind, or just want to say hi? Drop a message below.</p>
         </div>
 

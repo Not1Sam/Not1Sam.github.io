@@ -58,7 +58,7 @@ const Hero = () => {
           <span className="cursor-blink">_</span>
         </h1>
         <p className="hero-subtitle">{subtitleText}</p>
-        <a href="https://github.com/Not1Sam" target="_blank" rel="noreferrer" className="hero-cta">
+        <a href="https://linktr.ee/not1sam" target="_blank" rel="noreferrer" className="hero-cta">
           Let's Connect →
         </a>
       </div>

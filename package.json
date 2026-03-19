@@ -1,13 +1,14 @@
 {
   "name": "not1sam.github.io",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
+
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --host",
+    "preview": "vite preview --host",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "vite build"
   },
   "dependencies": {
     "@react-three/fiber": "^9.5.0",

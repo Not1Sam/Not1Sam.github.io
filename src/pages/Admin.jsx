@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Admin.css';
+import '../styles/Admin.css';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

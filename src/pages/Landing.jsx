@@ -14,9 +14,9 @@ const Landing = () => {
             <ProjectList />
             
             <footer className="footer-cta animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                <h2 className="cta-title brand-font">Have a project<br/>in mind?</h2>
+                <h2 className="cta-title brand-font">Have a project in mind?</h2>
                 <div className="cta-links">
-                    <a href="mailto:contact@not1sam.dev" className="cta-primary">Let's talk →</a>
+                    <a href="https://linktr.ee/not1sam" className="cta-primary">Let's talk →</a>
                     <a href="https://github.com/Not1Sam" target="_blank" rel="noreferrer" className="cta-secondary">Browse GitHub →</a>
                 </div>
                 

@@ -26,12 +26,12 @@ const CustomCursor = () => {
       }
     };
 
-    window.addEventListener('mousemove', updatePosition);
-    window.addEventListener('mouseover', updateHoverState);
+    globalThis.addEventListener('mousemove', updatePosition);
+    globalThis.addEventListener('mouseover', updateHoverState);
 
     return () => {
-      window.removeEventListener('mousemove', updatePosition);
-      window.removeEventListener('mouseover', updateHoverState);
+      globalThis.removeEventListener('mousemove', updatePosition);
+      globalThis.removeEventListener('mouseover', updateHoverState);
     };
   }, []);
 
