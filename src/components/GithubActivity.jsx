@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './GithubActivity.css';
 
+// ! ADD CACHE
+
 const GithubActivity = () => {
   const [profile, setProfile] = useState(null);
   const [commits, setCommits] = useState('...');
   const [prs, setPrs] = useState('...');
-  const [activityDays, setActivityDays] = useState(Array(60).fill(0));
+  const [activityDays, setActivityDays] = useState(new Array(60).fill(0));
   
   useEffect(() => {
     // 1. Fetch Profile (Repos, Followers)
@@ -35,7 +37,7 @@ const GithubActivity = () => {
         if (!Array.isArray(data)) return;
         
         // Create an array of 60 days
-        const heatmap = Array(60).fill(0);
+        const heatmap = new Array(60).fill(0);
         const today = new Date();
         today.setHours(0,0,0,0);
         

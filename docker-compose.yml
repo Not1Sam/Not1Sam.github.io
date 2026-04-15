@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  website:
+    build: .
+    container_name: not1sam-website
+    restart: always
+    ports:
+      - "80:80"

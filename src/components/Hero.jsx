@@ -21,8 +21,8 @@ const Hero = () => {
 
   const [titleText, setTitleText] = useState('');
   const [subtitleText, setSubtitleText] = useState('');
-  const fullTitle = "[ software\n  engineer ]";
-  const fullSubtitle = "building dry, structured software. homelab enthusiast.";
+  const fullTitle = "[ software \n engineer ]";
+  const fullSubtitle = "I build Systems that work and are scalable. | \n Networking enthusiast. | \n Homelaber. ";
 
   useEffect(() => {
     let titleIndex = 0;
