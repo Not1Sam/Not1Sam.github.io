@@ -3,6 +3,12 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'VERSION'
+      - 'docker-compose.yml'
+      - 'memory/**'
+      - 'backend/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +18,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
