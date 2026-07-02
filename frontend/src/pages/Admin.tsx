@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://84.8.221.29:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://84.8.221.29:8001";
 
 export function Admin() {
   const [token, setToken] = useState<string | null>(null);

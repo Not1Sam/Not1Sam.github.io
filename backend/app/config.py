@@ -18,7 +18,7 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "https://not1sam.github.io",
         "http://84.8.221.29",
-        "http://84.8.221.29:8000",
+        "http://84.8.221.29:8001",
     ]
 
     class Config:

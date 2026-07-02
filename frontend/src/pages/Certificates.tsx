@@ -9,7 +9,7 @@ interface Cert {
   credential_url: string | null;
 }
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://84.8.221.29:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://84.8.221.29:8001";
 
 export function Certificates() {
   const [certs, setCerts] = useState<Cert[]>([]);
