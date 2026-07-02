@@ -1,0 +1,45 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from './components/ThemeProvider'
+import { CustomCursor } from './components/CustomCursor'
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { Home } from './pages/Home'
+import { Lab } from './pages/Lab'
+import { Projects } from './pages/Projects'
+import { Stack } from './pages/Stack'
+import { Contact } from './pages/Contact'
+import { Blog } from './pages/Blog'
+import { Admin } from './pages/Admin'
+import { Certificates } from './pages/Certificates'
+import { CV } from './pages/CV'
+import { NotFound } from './pages/NotFound'
+
+function App() {
+  return (
+    <ThemeProvider>
+      <CustomCursor />
+      <Router>
+        <div className="w-full max-w-[100%] px-[4vw] min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-1 flex flex-col">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/lab" element={<Lab />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/stack" element={<Stack />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/certificates" element={<Certificates />} />
+              <Route path="/cv" element={<CV />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </ThemeProvider>
+  )
+}
+
+export default App

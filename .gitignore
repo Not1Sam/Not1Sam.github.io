@@ -1,26 +1,37 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies
+node_modules/
 
-node_modules
-dist
-dist-ssr
+# Build outputs
+dist/
+dist-ssr/
 *.local
+.next/
 
-# Editor directories and files
+# Editor
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 
+# Environment
 .env
+.env.local
+.env.*.local
+
+# Python backend
+backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/*.db
+backend/uploads/
+backend/.venv/
+
+# Node frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.DS_Store
+
+# Obsidian vault + memory (local only, not committed)
+.obsidian/
+memory/

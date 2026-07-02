@@ -1,47 +1,139 @@
-name: Deploy to GitHub Pages
+name: Deploy Backend to Server
 
 on:
   push:
-    branches: ["main"]
-
+    branches: [main]
+    paths: ['backend/**']
   workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: not1sam/not1sam-backend
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
-  build_site:
+  prepare-version:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'bump version to')"
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
+      - name: Read and increment version
+        id: version
+        run: |
+          CURRENT=$(cat VERSION)
+          echo "Current version: $CURRENT"
 
-      - name: Install dependencies
-        run: npm install
+          MAJOR=$(echo "$CURRENT" | grep -oP '(?<=v)\d+(?=\.\d+\.\d+)')
+          MINOR=$(echo "$CURRENT" | grep -oP '(?<=\.)\d+(?=\.\d+$)')
+          PATCH=$(echo "$CURRENT" | grep -oP '\d+$')
 
-      - name: Build
-        run: npm run build
+          PATCH=$((PATCH + 1))
+          if [ "$PATCH" -ge 10 ]; then
+            PATCH=0
+            MINOR=$((MINOR + 1))
+          fi
+          if [ "$MINOR" -ge 10 ]; then
+            MINOR=0
+            MAJOR=$((MAJOR + 1))
+          fi
 
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+          NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "New version: $NEW_VERSION"
+          echo "VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
-  deploy:
-    needs: build_site
+  build-backend:
+    needs: prepare-version
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ needs.prepare-version.outputs.version }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          platforms: linux/amd64,linux/arm64
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
+
+  release:
+    needs: [prepare-version, build-backend]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update VERSION file
+        run: |
+          echo "${{ needs.prepare-version.outputs.version }}" > VERSION
+          echo "VERSION file updated to $(cat VERSION)"
+
+      - name: Update docker-compose.yml image tag
+        env:
+          VERSION: ${{ needs.prepare-version.outputs.version }}
+        run: |
+          sed -i -E \
+            "s|(not1sam/not1sam-backend):v[0-9]+\.[0-9]+\.[0-9]+|\1:${VERSION}|g" \
+            docker-compose.yml
+          echo "Updated docker-compose.yml:"
+          grep "image:" docker-compose.yml
+
+      - name: Commit version updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: bump version to ${{ needs.prepare-version.outputs.version }}"
+          file_pattern: VERSION docker-compose.yml
+
+      - name: Trigger Portainer Webhook
+        run: |
+          if [ -n "${{ secrets.PORTAINER_WEBHOOK_URL }}" ]; then
+            echo "Triggering Portainer webhook..."
+            RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}")
+            if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "201" ] || [ "$RESPONSE" = "204" ]; then
+              echo "Webhook triggered successfully (HTTP $RESPONSE)"
+            else
+              echo "WARNING: Webhook returned HTTP $RESPONSE"
+              exit 1
+            fi
+          else
+            echo "PORTAINER_WEBHOOK_URL secret is not set. Skipping webhook trigger."
+          fi
