@@ -49,7 +49,7 @@ jobs:
 
       - name: Lowercase repo name
         id: image
-        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        run: echo "IMAGE_NAME_LOWER=not1sam/not1sam-backend" >> "$GITHUB_OUTPUT"
 
   build-backend:
     needs: prepare-version
