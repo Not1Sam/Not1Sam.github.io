@@ -36,6 +36,6 @@ app.include_router(blog.router)
 app.include_router(certificates.router)
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok"}
