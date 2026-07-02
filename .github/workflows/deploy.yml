@@ -117,6 +117,9 @@ jobs:
           echo "Updated docker-compose.yml:"
           grep "image:" docker-compose.yml
 
+      - name: Pull latest (avoid divergence)
+        run: git pull --rebase origin main
+
       - name: Commit version updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
