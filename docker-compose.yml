@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/not1sam/not1sam-backend:v1.0.1
+    image: ghcr.io/not1sam/not1sam-backend:v1.0.2
     container_name: not1sam-backend
     restart: unless-stopped
     ports:
