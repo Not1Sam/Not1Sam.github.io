@@ -13,11 +13,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 ALGORITHM = "HS256"
 
-# ── Hardcoded admin credentials ──────────────────────────
-# Change these in production via environment variables
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "Admin123!"
-
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)

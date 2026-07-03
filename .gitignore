@@ -14,11 +14,12 @@ dist-ssr/
 .DS_Store
 *.sw?
 
-# Environment (ignore in subdirs, root .env is for docker-compose VERSION)
-backend/.env
-frontend/.env
+# Environment files
+.env
 .env.local
 .env.*.local
+backend/.env
+frontend/.env
 
 # Python backend
 backend/venv/
