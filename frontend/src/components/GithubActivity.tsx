@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { githubFetch } from "../lib/github";
 import { GITHUB_USERNAME, HEATMAP_COLORS } from "../lib/constants";
+import { RadarScan } from "./LoadingStates";
 import type { GitHubProfile, GitHubSearchCount, GitHubEvent } from "../lib/types";
 
 function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number }) {
@@ -19,6 +20,7 @@ export function GithubActivity() {
   const [prs, setPrs] = useState<string>("...");
   const [heat, setHeat] = useState<number[]>(new Array(60).fill(0));
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [cellsVisible, setCellsVisible] = useState(0);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export function GithubActivity() {
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load GitHub data");
       }
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -69,6 +72,23 @@ export function GithubActivity() {
     }, 30);
     return () => clearInterval(interval);
   }, [heat]);
+
+  if (loading) {
+    return (
+      <div className="mt-14 md:mt-20 w-full animate-fade-in" style={{ animationDelay: "0.3s" }}>
+        <div className="mb-6 md:mb-8">
+          <span className="text-[0.7rem] md:text-[0.75rem] font-semibold tracking-[0.15em] uppercase mb-2 block font-mono text-secondary">
+            <span className="fluo-text mr-1">▸</span> ACTIVITY MONITOR
+          </span>
+          <h2 className="text-[clamp(2rem,6vw,3.5rem)] tracking-tight brand-font">GitHub.</h2>
+        </div>
+        <div className="bento-box p-6 md:p-10 flex flex-col items-center justify-center">
+          <RadarScan />
+          <p className="text-secondary text-[0.75rem] font-mono mt-4 tracking-widest animate-pulse">SCANNING ACTIVITY...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { githubFetch } from "../lib/github";
 import { GITHUB_USERNAME } from "../lib/constants";
+import { CardSkeleton } from "./LoadingStates";
 import type { GitHubRepo } from "../lib/types";
 
 export function ProjectList() {
@@ -14,7 +15,14 @@ export function ProjectList() {
       .catch((err) => { setError(err?.message || "Failed to load projects"); setLoading(false); });
   }, []);
 
-  if (loading) return <div className="spinner" />;
+  if (loading) return (
+    <section className="py-10 md:py-14 border-t border-border">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-baseline mb-8 md:mb-10 gap-2">
+        <h2 className="text-[clamp(1.6rem,5vw,2.5rem)] tracking-tight brand-font">Selected Work.</h2>
+      </div>
+      <CardSkeleton count={6} />
+    </section>
+  );
 
   if (error) {
     return (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE } from "../lib/constants";
+import { ImageSkeleton } from "../components/LoadingStates";
 
 interface Cert { id: string; title: string; issuer: string; date: string; image_path: string; credential_url: string | null; }
 
@@ -28,7 +29,9 @@ export function Certificates() {
           <p className="text-secondary mt-2 text-[0.85rem] md:text-[0.9rem]">Professional certifications and achievements.</p>
         </div>
 
-        {loading ? <div className="spinner" /> : error ? (
+        {loading ? (
+          <ImageSkeleton count={6} />
+        ) : error ? (
           <div className="bento-box text-center py-10"><p className="text-red-400 font-mono text-[0.85rem]">[ERROR] {error}</p></div>
         ) : certs.length === 0 ? (
           <div className="bento-box text-center py-10"><p className="text-secondary text-[0.85rem] font-mono">NO CREDENTIALS ON FILE.</p></div>

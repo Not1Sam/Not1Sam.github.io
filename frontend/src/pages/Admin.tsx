@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
 import { API_BASE } from "../lib/constants";
+import { sanitizeInput, validateRequired, validateMinLength, validateMaxLength, validateFileSize, validateFileType } from "../lib/validation";
 import type { BlogPost, CVData } from "../lib/types";
 
 interface ContactMessage { id: string; name: string; email: string; message: string; created_at: string; }
+
+function getCsrfToken(): string {
+  let token = document.cookie.split("; ").find((c) => c.startsWith("csrf_token="))?.split("=")[1];
+  if (!token) {
+    token = crypto.randomUUID();
+    document.cookie = `csrf_token=${token}; SameSite=Strict; Path=/`;
+  }
+  return token;
+}
 
 export function Admin() {
   const [token, setToken] = useState<string | null>(null);
@@ -12,6 +22,7 @@ export function Admin() {
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
+  const [formErrors, setFormErrors] = useState<{ title?: string; excerpt?: string; content?: string; password?: string }>({});
   const [toast, setToast] = useState("");
   const [inbox, setInbox] = useState<ContactMessage[]>([]);
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -19,57 +30,88 @@ export function Admin() {
   const [cv, setCv] = useState<CVData | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [cvUploading, setCvUploading] = useState(false);
+  const [cvError, setCvError] = useState("");
 
   useEffect(() => { const s = localStorage.getItem("admin_token"); if (s) setToken(s); }, []);
   useEffect(() => { if (token) { loadInbox(); loadPosts(); loadCv(); } }, [token]);
 
-  const authHeaders = { Authorization: `Bearer ${token}` };
+  const authHeaders = (): Record<string, string> => ({
+    Authorization: `Bearer ${token}`,
+    "X-CSRF-Token": getCsrfToken(),
+  });
 
-  const loadInbox = async () => { try { const r = await fetch(`${API_BASE}/api/contact`, { headers: authHeaders }); if (r.ok) setInbox(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load inbox"); } };
+  const loadInbox = async () => { try { const r = await fetch(`${API_BASE}/api/contact`, { headers: authHeaders() }); if (r.ok) setInbox(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load inbox"); } };
   const loadPosts = async () => { try { const r = await fetch(`${API_BASE}/api/blog`); if (r.ok) setPosts(await r.json()); } catch { toastMsg("Failed to load posts"); } };
-  const loadCv = async () => { try { const r = await fetch(`${API_BASE}/api/cv`, { headers: authHeaders }); if (r.ok) setCv(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load CV"); } };
+  const loadCv = async () => { try { const r = await fetch(`${API_BASE}/api/cv`, { headers: authHeaders() }); if (r.ok) setCv(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load CV"); } };
 
   const toastMsg = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const pwErr = validateRequired(password, "Password");
+    if (pwErr) { setFormErrors({ password: pwErr }); return; }
+    setFormErrors({});
     try {
-      const r = await fetch(`${API_BASE}/api/auth/login`, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ username: "", password }) });
+      const r = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRF-Token": getCsrfToken() },
+        body: new URLSearchParams({ username: "", password }),
+      });
       if (r.ok) { const d = await r.json(); localStorage.setItem("admin_token", d.access_token); setToken(d.access_token); setError(""); }
       else setError("ACCESS DENIED.");
     } catch { setError("CONNECTION FAILED."); }
   };
 
   const handleLogout = () => { localStorage.removeItem("admin_token"); setToken(null); setPassword(""); };
-  const resetForm = () => { setTitle(""); setExcerpt(""); setContent(""); setEditingPost(null); };
+  const resetForm = () => { setTitle(""); setExcerpt(""); setContent(""); setEditingPost(null); setFormErrors({}); };
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
+    const t = sanitizeInput(title);
+    const ex = sanitizeInput(excerpt);
+    const co = sanitizeInput(content);
+    const errs: typeof formErrors = {};
+    const tErr = validateRequired(t, "Title") || validateMaxLength(t, 200, "Title");
+    const exErr = validateRequired(ex, "Excerpt") || validateMaxLength(ex, 500, "Excerpt");
+    const coErr = validateRequired(co, "Content") || validateMinLength(co, 10, "Content");
+    if (tErr) errs.title = tErr;
+    if (exErr) errs.excerpt = exErr;
+    if (coErr) errs.content = coErr;
+    if (Object.keys(errs).length > 0) { setFormErrors(errs); return; }
+    setFormErrors({});
     try {
       const url = editingPost ? `${API_BASE}/api/blog/${editingPost.id}` : `${API_BASE}/api/blog`;
-      const r = await fetch(url, { method: editingPost ? "PUT" : "POST", headers: { "Content-Type": "application/json", ...authHeaders }, body: JSON.stringify({ title, excerpt, content }) });
+      const r = await fetch(url, {
+        method: editingPost ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ title: t, excerpt: ex, content: co }),
+      });
       if (r.ok) { resetForm(); toastMsg(editingPost ? "Post updated." : "Post published."); loadPosts(); } else toastMsg("Save failed.");
     } catch { toastMsg("Connection failed."); }
   };
 
-  const handleEdit = (post: BlogPost) => { setEditingPost(post); setTitle(post.title); setExcerpt(post.excerpt); setContent(post.content); };
+  const handleEdit = (post: BlogPost) => { setEditingPost(post); setTitle(post.title); setExcerpt(post.excerpt); setContent(post.content); setFormErrors({}); };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this post?")) return;
-    try { const r = await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setPosts(posts.filter((p) => p.id !== id)); toastMsg("Post deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setPosts(posts.filter((p) => p.id !== id)); toastMsg("Post deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   const handleDeleteInbox = async (id: string) => {
     if (!confirm("Delete message?")) return;
-    try { const r = await fetch(`${API_BASE}/api/contact/${id}`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setInbox(inbox.filter((m) => m.id !== id)); toastMsg("Message deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/contact/${id}`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setInbox(inbox.filter((m) => m.id !== id)); toastMsg("Message deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   const handleCvUpload = async () => {
     if (!cvFile) return;
+    const sizeErr = validateFileSize(cvFile);
+    const typeErr = validateFileType(cvFile, ["pdf"]);
+    if (sizeErr || typeErr) { setCvError(sizeErr || typeErr || ""); return; }
+    setCvError("");
     setCvUploading(true);
     try {
       const fd = new FormData(); fd.append("file", cvFile);
-      const r = await fetch(`${API_BASE}/api/cv`, { method: "POST", headers: authHeaders, body: fd });
+      const r = await fetch(`${API_BASE}/api/cv`, { method: "POST", headers: { ...authHeaders() }, body: fd });
       if (r.ok) { setCv(await r.json()); setCvFile(null); toastMsg("CV uploaded."); }
       else { const e = await r.json(); toastMsg(e.detail || "Upload failed."); }
     } catch { toastMsg("Connection failed."); } finally { setCvUploading(false); }
@@ -77,7 +119,7 @@ export function Admin() {
 
   const handleCvDelete = async () => {
     if (!confirm("Delete CV?")) return;
-    try { const r = await fetch(`${API_BASE}/api/cv`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setCv(null); toastMsg("CV deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/cv`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setCv(null); toastMsg("CV deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   if (!token) {
@@ -88,7 +130,8 @@ export function Admin() {
           <h1 className="text-[1.3rem] md:text-[1.5rem] font-bold mb-2 brand-font">Admin Terminal</h1>
           <p className="text-secondary mb-6 text-[0.8rem] font-mono">Authentication required</p>
           <form onSubmit={handleLogin} className="flex flex-col gap-3">
-            <input type="password" placeholder="Enter passcode..." value={password} onChange={(e) => setPassword(e.target.value)} className="input-field" />
+            <input type="password" required minLength={1} placeholder="Enter passcode..." value={password} onChange={(e) => setPassword(e.target.value)} className="input-field" />
+            {formErrors.password && <span className="text-red-500 text-[0.7rem] font-mono animate-flicker-in">{formErrors.password}</span>}
             {error && <span className="text-red-500 text-[0.75rem] font-mono">[DENIED] {error}</span>}
             <button type="submit" className="btn-primary w-full">AUTHENTICATE →</button>
           </form>
@@ -125,14 +168,17 @@ export function Admin() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-[0.65rem] uppercase tracking-[0.12em] text-secondary font-mono">TITLE</label>
                 <input required maxLength={200} value={title} onChange={(e) => setTitle(e.target.value)} className="input-field" />
+                {formErrors.title && <span className="text-red-500 text-[0.7rem] font-mono">{formErrors.title}</span>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[0.65rem] uppercase tracking-[0.12em] text-secondary font-mono">EXCERPT</label>
                 <textarea required rows={2} maxLength={500} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} className="input-field resize-none" />
+                {formErrors.excerpt && <span className="text-red-500 text-[0.7rem] font-mono">{formErrors.excerpt}</span>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[0.65rem] uppercase tracking-[0.12em] text-secondary font-mono">CONTENT</label>
                 <textarea required rows={8} value={content} onChange={(e) => setContent(e.target.value)} className="input-field resize-none min-h-[140px]" />
+                {formErrors.content && <span className="text-red-500 text-[0.7rem] font-mono">{formErrors.content}</span>}
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <button type="submit" className="btn-primary text-[0.8rem]">{editingPost ? "UPDATE" : "PUBLISH"}</button>
@@ -218,8 +264,9 @@ export function Admin() {
             <div className="border border-border p-3 md:p-4 rounded">
               <h3 className="font-bold text-primary brand-font mb-3 text-[0.9rem]">{cv ? "REPLACE CV" : "UPLOAD CV"}</h3>
               <div className="flex flex-col gap-3">
-                <input type="file" accept=".pdf" onChange={(e) => setCvFile(e.target.files?.[0] || null)} className="input-field file:mr-3 file:py-1.5 file:px-3 file:border-0 file:bg-fluo file:text-black file:font-semibold file:cursor-pointer file:font-mono file:text-[0.75rem] file:rounded" />
+                <input type="file" accept=".pdf" onChange={(e) => { setCvFile(e.target.files?.[0] || null); setCvError(""); }} className="input-field file:mr-3 file:py-1.5 file:px-3 file:border-0 file:bg-fluo file:text-black file:font-semibold file:cursor-pointer file:font-mono file:text-[0.75rem] file:rounded" />
                 {cvFile && <p className="text-secondary text-[0.75rem] font-mono break-all">{cvFile.name} ({(cvFile.size / 1024 / 1024).toFixed(2)} MB)</p>}
+                {cvError && <span className="text-red-500 text-[0.7rem] font-mono animate-flicker-in">{cvError}</span>}
                 <button onClick={handleCvUpload} disabled={!cvFile || cvUploading} className="btn-primary w-full md:w-auto text-[0.8rem] disabled:opacity-30">
                   {cvUploading ? "UPLOADING..." : cv ? "REPLACE" : "UPLOAD"}
                 </button>

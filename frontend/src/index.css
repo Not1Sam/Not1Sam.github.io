@@ -406,6 +406,244 @@ img {
 }
 
 /* ══════════════════════════════════════════════
+   TERMINAL BOOT — Hero loading
+   ══════════════════════════════════════════════ */
+
+.loading-terminal {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 1.5rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.loading-terminal-line {
+  padding: 0.25rem 0;
+  animation: staggerIn 0.3s ease forwards;
+}
+
+.loading-terminal-cursor {
+  color: var(--color-fluo);
+  animation: blink 1s step-end infinite;
+}
+
+/* ══════════════════════════════════════════════
+   RADAR SCAN — GithubActivity loading
+   ══════════════════════════════════════════════ */
+
+.loading-radar {
+  width: 120px;
+  height: 120px;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.loading-radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, var(--color-fluo-dim) 30deg, transparent 60deg);
+  animation: radarSweep 2s linear infinite;
+}
+
+.loading-radar-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+}
+
+.loading-radar-ring-1 { inset: 25%; }
+.loading-radar-ring-2 { inset: 10%; }
+.loading-radar-ring-3 { inset: -5%; border-color: var(--color-fluo-dim); }
+
+.loading-radar-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--color-fluo);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--color-fluo);
+}
+
+.loading-radar-dot-1 { top: 20%; left: 60%; animation: flickerIn 1.5s ease infinite; }
+.loading-radar-dot-2 { top: 55%; left: 30%; animation: flickerIn 1.5s ease 0.5s infinite; }
+.loading-radar-dot-3 { top: 70%; left: 70%; animation: flickerIn 1.5s ease 1s infinite; }
+
+/* ══════════════════════════════════════════════
+   SKELETON SHIMMER — Card/Content loading
+   ══════════════════════════════════════════════ */
+
+.loading-skeleton-card {
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.loading-skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-border) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.loading-skeleton-title { width: 60%; height: 16px; }
+.loading-skeleton-desc { width: 100%; }
+.loading-skeleton-desc-short { width: 40%; }
+
+.loading-skeleton-pill {
+  width: 50px;
+  height: 20px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-border) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════
+   TERMINAL LINES — Blog loading
+   ══════════════════════════════════════════════ */
+
+.loading-skeleton-blog-line {
+  display: inline-block;
+  width: 80%;
+  height: 10px;
+  vertical-align: middle;
+}
+
+.loading-skeleton-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* ══════════════════════════════════════════════
+   DOCUMENT SKELETON — CV loading
+   ══════════════════════════════════════════════ */
+
+.loading-document {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.loading-skeleton-doc-title { width: 50%; height: 20px; }
+.loading-skeleton-doc-subtitle { width: 30%; height: 12px; }
+.loading-skeleton-doc-line { width: 100%; }
+.loading-skeleton-doc-line:nth-child(odd) { width: 90%; }
+.loading-skeleton-doc-line:nth-child(3n) { width: 70%; }
+
+.loading-skeleton-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 0.5rem 0;
+}
+
+/* ══════════════════════════════════════════════
+   IMAGE SKELETON — Certificates loading
+   ══════════════════════════════════════════════ */
+
+.loading-skeleton-image-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.loading-skeleton-image {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-border) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════
+   MATRIX RAIN — Stack loading
+   ══════════════════════════════════════════════ */
+
+.loading-matrix {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+}
+
+.loading-matrix-char {
+  color: var(--color-fluo);
+  opacity: 0;
+  animation: matrixFall 2s ease-in-out infinite;
+}
+
+@keyframes matrixFall {
+  0% { opacity: 0; transform: translateY(-20px); }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
+/* ══════════════════════════════════════════════
+   PULSE RING — Generic loading
+   ══════════════════════════════════════════════ */
+
+.loading-pulse-ring-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.loading-pulse-ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-fluo);
+  animation: pulseRing 1.5s ease-out infinite;
+}
+
+.loading-pulse-ring-1 { animation-delay: 0s; }
+.loading-pulse-ring-2 { animation-delay: 0.4s; }
+.loading-pulse-ring-3 { animation-delay: 0.8s; }
+
+.loading-pulse-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-fluo);
+  letter-spacing: 0.2em;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════
    BENTO BOX — Cyber Card
    ══════════════════════════════════════════════ */
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { GithubActivity } from "./GithubActivity";
 import { githubFetch } from "../lib/github";
 import { GITHUB_USERNAME, LINKTREE, HERO_STATS } from "../lib/constants";
+import { TerminalBoot } from "./LoadingStates";
 import type { GitHubProfile } from "../lib/types";
 
 function CountUp({ target, duration = 1200 }: { target: number; duration?: number }) {
@@ -113,7 +114,9 @@ export function Hero() {
 
       {/* Stats with count-up */}
       {loading ? (
-        <div className="spinner" />
+        <div className="mt-10 md:mt-14">
+          <TerminalBoot />
+        </div>
       ) : profile ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-10 md:mt-14">
           {stats.map((s, i) => (

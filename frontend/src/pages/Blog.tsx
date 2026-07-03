@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "../lib/constants";
+import { TerminalLines } from "../components/LoadingStates";
 import type { BlogPost } from "../lib/types";
 
 export function Blog() {
@@ -29,7 +30,11 @@ export function Blog() {
           <p className="text-secondary mt-2 text-[0.85rem] md:text-[0.9rem] stagger-child" style={{ animationDelay: "0.15s" }}>Thoughts, tutorials, and engineering rants.</p>
         </div>
 
-        {loading ? <div className="spinner" /> : error ? (
+        {loading ? (
+          <div className="bento-box p-6 md:p-10">
+            <TerminalLines count={5} />
+          </div>
+        ) : error ? (
           <div className="bento-box text-center py-10">
             <p className="text-red-400 font-mono text-[0.85rem] animate-flicker-in">[ERROR] {error}</p>
           </div>

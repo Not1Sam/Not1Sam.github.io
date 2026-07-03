@@ -6,7 +6,17 @@ interface State { hasError: boolean; error: Error | null; }
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) { super(props); this.state = { hasError: false, error: null }; }
   static getDerivedStateFromError(error: Error): State { return { hasError: true, error }; }
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) { console.error("ErrorBoundary caught:", error, errorInfo); }
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    const log = {
+      timestamp: new Date().toISOString(),
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+    };
+    console.error("[ERROR_BOUNDARY]", JSON.stringify(log, null, 2));
+  }
 
   render() {
     if (this.state.hasError) {

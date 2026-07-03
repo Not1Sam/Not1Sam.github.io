@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { API_BASE } from "../lib/constants";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { sanitizeInput, validateEmail, validateRequired, validateMinLength, validateMaxLength } from "../lib/validation";
 
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -13,11 +12,18 @@ export function Contact() {
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
-    if (!form.name.trim()) newErrors.name = "Name is required";
-    if (!form.email.trim()) newErrors.email = "Email is required";
-    else if (!EMAIL_REGEX.test(form.email)) newErrors.email = "Invalid email format";
-    if (!form.message.trim()) newErrors.message = "Message is required";
-    else if (form.message.length > 2000) newErrors.message = "Max 2000 characters";
+    const name = sanitizeInput(form.name);
+    const email = sanitizeInput(form.email);
+    const message = form.message;
+
+    const nameErr = validateRequired(name, "Name") || validateMaxLength(name, 100, "Name");
+    const emailErr = validateRequired(email, "Email") || (validateEmail(email) ? null : "Invalid email format");
+    const msgErr = validateRequired(message, "Message") || validateMinLength(message, 10, "Message") || validateMaxLength(message, 2000, "Message");
+
+    if (nameErr) newErrors.name = nameErr;
+    if (emailErr) newErrors.email = emailErr;
+    if (msgErr) newErrors.message = msgErr;
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -29,7 +35,11 @@ export function Contact() {
     try {
       const res = await fetch(`${API_BASE}/api/contact`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim() }),
+        body: JSON.stringify({
+          name: sanitizeInput(form.name),
+          email: sanitizeInput(form.email),
+          message: sanitizeInput(form.message),
+        }),
       });
       if (res.ok) { setSubmitted(true); setForm({ name: "", email: "", message: "" }); setErrors({}); }
       else if (res.status === 429) setServerError("Rate limit exceeded. Wait before retrying.");

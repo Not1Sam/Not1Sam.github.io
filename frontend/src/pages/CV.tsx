@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { SKILLS } from "../lib/skills";
 import { API_BASE, SITE_URL } from "../lib/constants";
+import { DocSkeleton } from "../components/LoadingStates";
 import type { CVData } from "../lib/types";
 
 export function CV() {
@@ -14,6 +15,24 @@ export function CV() {
       .then((data) => { setCv(data); if (data?.file_path) setViewMode("embedded"); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return (
+      <main className="py-6 md:py-8 max-w-[1100px]">
+        <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+          <div className="mb-6 md:mb-8">
+            <span className="text-[0.7rem] md:text-[0.75rem] font-semibold tracking-[0.15em] uppercase mb-2 block font-mono text-secondary">
+              <span className="fluo-text mr-1">▸</span> PROFILE
+            </span>
+            <h1 className="text-[clamp(1.8rem,6vw,3rem)] tracking-tight brand-font">CV.</h1>
+          </div>
+          <div className="bento-box">
+            <DocSkeleton />
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   const experience = [
     { role: "Software Engineer", company: "Freelance", period: "2023 — Present", description: "Building full-stack web applications, REST APIs, and containerized infrastructure." },

@@ -1,6 +1,15 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export function NotFound() {
+  useEffect(() => {
+    console.warn("[404]", JSON.stringify({
+      path: window.location.pathname,
+      referrer: document.referrer,
+      timestamp: new Date().toISOString(),
+    }));
+  }, []);
+
   return (
     <div className="flex justify-center items-center min-h-[50vh] md:min-h-[60vh] animate-fade-in">
       <div className="bento-box text-center py-10 md:py-14 px-6 md:px-10 relative overflow-hidden animate-scale-in">
