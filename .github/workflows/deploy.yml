@@ -80,7 +80,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ needs.prepare-version.outputs.image_name }}-backend
+          images: ${{ env.REGISTRY }}/${{ needs.prepare-version.outputs.image_name }}
           tags: |
             type=raw,value=latest
             type=raw,value=${{ needs.prepare-version.outputs.version }}
@@ -117,7 +117,7 @@ jobs:
           IMAGE_NAME: ${{ needs.prepare-version.outputs.image_name }}
         run: |
           sed -i -E \
-            "s|(${IMAGE_NAME}-backend):v[0-9]+\.[0-9]+\.[0-9]+|\1:${VERSION}|g" \
+            "s|(${IMAGE_NAME}):v[0-9]+\.[0-9]+\.[0-9]+|\1:${VERSION}|g" \
             docker-compose.yml
           echo "Updated docker-compose.yml:"
           grep "image:" docker-compose.yml
