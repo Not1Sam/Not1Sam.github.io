@@ -121,7 +121,7 @@ jobs:
           echo "docker-compose.yml image tag updated to $VERSION"
 
       - name: Commit version updates
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: bump version to ${{ needs.prepare-version.outputs.version }}"
           file_pattern: "VERSION docker-compose.yml"
