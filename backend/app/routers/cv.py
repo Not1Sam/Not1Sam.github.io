@@ -26,10 +26,7 @@ async def get_cv(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/file")
-async def get_cv_file(
-    db: AsyncSession = Depends(get_db),
-    _admin: dict = Depends(get_current_admin),
-):
+async def get_cv_file(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(CV).order_by(CV.uploaded_at.desc()).limit(1))
     cv = result.scalar_one_or_none()
     if not cv:
