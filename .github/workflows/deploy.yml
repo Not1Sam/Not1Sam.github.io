@@ -112,12 +112,14 @@ jobs:
         run: |
           echo "$VERSION" > VERSION
           echo "VERSION: $(cat VERSION)"
+          sed -i "s|ghcr.io/not1sam/not1sam-backend:v[0-9]*\.[0-9]*\.[0-9]*|ghcr.io/not1sam/not1sam-backend:$VERSION|g" docker-compose.yml
+          echo "docker-compose.yml image tag updated to $VERSION"
 
       - name: Commit version updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: bump version to ${{ needs.prepare-version.outputs.version }}"
-          file_pattern: VERSION
+          file_pattern: "VERSION docker-compose.yml"
 
       - name: Trigger Portainer Webhook
         run: |
