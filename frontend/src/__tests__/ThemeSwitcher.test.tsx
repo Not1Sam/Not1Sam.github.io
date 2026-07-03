@@ -10,10 +10,9 @@ describe('ThemeSwitcher', () => {
         <ThemeSwitcher />
       </MemoryRouter>
     );
-
-    expect(screen.getByText('Dark')).toBeInTheDocument();
-    expect(screen.getByText('Light')).toBeInTheDocument();
-    expect(screen.getByText('Purple')).toBeInTheDocument();
+    expect(screen.getByText('DK')).toBeInTheDocument();
+    expect(screen.getByText('LT')).toBeInTheDocument();
+    expect(screen.getByText('PR')).toBeInTheDocument();
   });
 
   it('defaults to dark theme', () => {
@@ -22,8 +21,7 @@ describe('ThemeSwitcher', () => {
         <ThemeSwitcher />
       </MemoryRouter>
     );
-
-    const darkButton = screen.getByText('Dark');
-    expect(darkButton).toHaveClass('text-bg');
+    const darkButton = screen.getByText('DK');
+    expect(darkButton).toHaveClass('text-fluo');
   });
 });

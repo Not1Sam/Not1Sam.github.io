@@ -18,7 +18,6 @@ describe('ErrorBoundary', () => {
         <SafeComponent />
       </ErrorBoundary>
     );
-
     expect(screen.getByText('Safe content')).toBeInTheDocument();
   });
 
@@ -28,9 +27,8 @@ describe('ErrorBoundary', () => {
         <ThrowingComponent />
       </ErrorBoundary>
     );
-
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText(/refreshing the page/i)).toBeInTheDocument();
+    expect(screen.getByText('CRITICAL FAILURE')).toBeInTheDocument();
+    expect(screen.getByText(/unexpected error/i)).toBeInTheDocument();
   });
 
   it('has a reload button', () => {
@@ -39,8 +37,7 @@ describe('ErrorBoundary', () => {
         <ThrowingComponent />
       </ErrorBoundary>
     );
-
-    const reloadButton = screen.getByText('Reload Page');
+    const reloadButton = screen.getByText('REBOOT SYSTEM');
     expect(reloadButton).toBeInTheDocument();
   });
 });

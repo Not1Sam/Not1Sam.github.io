@@ -15,6 +15,10 @@ import { Blog } from './pages/Blog'
 import { Admin } from './pages/Admin'
 import { Certificates } from './pages/Certificates'
 import { CV } from './pages/CV'
+import { PrivacyPolicy } from './pages/PrivacyPolicy'
+import { TermsOfService } from './pages/TermsOfService'
+import { CookiePolicy } from './pages/CookiePolicy'
+import { Disclaimer } from './pages/Disclaimer'
 import { NotFound } from './pages/NotFound'
 
 function ScrollToTop() {
@@ -44,6 +48,10 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/cv" element={<CV />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="*" element={<NotFound />} />
               </Routes>
             </ErrorBoundary>

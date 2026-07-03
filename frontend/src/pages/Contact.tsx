@@ -9,20 +9,15 @@ export function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
-    if (!form.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!EMAIL_REGEX.test(form.email)) {
-      newErrors.email = "Invalid email format";
-    }
-    if (!form.message.trim()) {
-      newErrors.message = "Message is required";
-    } else if (form.message.length > 2000) {
-      newErrors.message = "Message must be under 2000 characters";
-    }
+    if (!form.email.trim()) newErrors.email = "Email is required";
+    else if (!EMAIL_REGEX.test(form.email)) newErrors.email = "Invalid email format";
+    if (!form.message.trim()) newErrors.message = "Message is required";
+    else if (form.message.length > 2000) newErrors.message = "Max 2000 characters";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -30,102 +25,101 @@ export function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setLoading(true);
-    setServerError("");
+    setLoading(true); setServerError("");
     try {
       const res = await fetch(`${API_BASE}/api/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim() }),
       });
-      if (res.ok) {
-        setSubmitted(true);
-        setForm({ name: "", email: "", message: "" });
-        setErrors({});
-      } else if (res.status === 429) {
-        setServerError("Too many messages. Please wait a minute before trying again.");
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setServerError(data.detail || "Failed to send message. Please try again.");
-      }
-    } catch {
-      setServerError("Connection failed. Please check your internet and try again.");
-    }
+      if (res.ok) { setSubmitted(true); setForm({ name: "", email: "", message: "" }); setErrors({}); }
+      else if (res.status === 429) setServerError("Rate limit exceeded. Wait before retrying.");
+      else { const data = await res.json().catch(() => ({})); setServerError(data.detail || "Transmission failed."); }
+    } catch { setServerError("CONNECTION FAILED — Check network."); }
     setLoading(false);
   };
 
   return (
-    <main className="py-8">
+    <main className="py-6 md:py-8">
       <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-        <div className="mb-12">
-          <h1 className="text-[clamp(2.5rem,6vw,4rem)] tracking-tight brand-font">Let&apos;s Talk.</h1>
-          <p className="text-secondary mt-4">
-            Have a project in mind, or just want to say hi? Drop a message below.
+        <div className="mb-8 md:mb-10">
+          <span className="text-[0.7rem] md:text-[0.75rem] font-semibold tracking-[0.15em] uppercase mb-2 block font-mono text-secondary stagger-child" style={{ animationDelay: "0.05s" }}>
+            <span className="fluo-text mr-1">▸</span> COMMS
+          </span>
+          <h1 className="text-[clamp(1.8rem,6vw,3rem)] tracking-tight brand-font stagger-child" style={{ animationDelay: "0.1s" }}>Let&apos;s Talk.</h1>
+          <p className="text-secondary mt-2 text-[0.85rem] md:text-[0.9rem] stagger-child" style={{ animationDelay: "0.15s" }}>
+            Open a transmission channel below.
           </p>
         </div>
 
-        <div className="bento-box max-w-[800px] animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <div className="bento-box w-full max-w-[700px] animate-fade-in relative overflow-hidden" style={{ animationDelay: "0.2s" }}>
+          {/* Scanning line */}
+          <div className="scan-line" style={{ animationDuration: "6s" }} />
+
           {submitted ? (
-            <div className="text-center py-8">
-              <h3 className="text-2xl font-bold mb-4 fluo-text brand-font">Message Protocol Initiated.</h3>
-              <p className="text-secondary mb-8">
-                Thanks for reaching out! I&apos;ll get back to you as soon as my compiler finishes.
-              </p>
-              <button
-                onClick={() => setSubmitted(false)}
-                className="px-8 py-3 bg-transparent border border-border text-primary cursor-pointer transition-all hover:border-secondary font-mono"
-              >
-                Send Another
-              </button>
+            <div className="text-center py-6 md:py-8 relative z-10">
+              <div className="font-mono text-fluo text-[1.5rem] mb-3 animate-text-glow animate-flicker-in">✓ TRANSMISSION SENT</div>
+              <p className="text-secondary mb-6 text-[0.85rem] stagger-child" style={{ animationDelay: "0.2s" }}>Signal received. Standby for response.</p>
+              <div className="stagger-child" style={{ animationDelay: "0.4s" }}>
+                <button onClick={() => setSubmitted(false)} className="btn-outline text-[0.8rem]">NEW TRANSMISSION</button>
+              </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-              {serverError && <p className="text-red-500 text-[0.9rem]">{serverError}</p>}
-              <div className="flex flex-col gap-2">
-                <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">NAME</label>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-5 relative z-10">
+              {serverError && (
+                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded font-mono text-red-400 text-[0.8rem] animate-flicker-in">
+                  [ERROR] {serverError}
+                </div>
+              )}
+              <div className={`flex flex-col gap-1.5 transition-all duration-300 ${focusedField === "name" ? "translate-x-1" : ""}`}>
+                <label className="text-[0.7rem] uppercase tracking-[0.12em] text-secondary font-mono">
+                  <span className="fluo-text mr-1">01</span> IDENTIFIER
+                </label>
                 <input
-                  type="text"
-                  required
-                  maxLength={100}
-                  value={form.name}
+                  type="text" required maxLength={100} value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="John Doe"
-                  className="p-3 bg-transparent border border-border text-primary outline-none transition-colors focus:border-fluo"
+                  onFocus={() => setFocusedField("name")} onBlur={() => setFocusedField(null)}
+                  placeholder="Your name" className={`input-field transition-all duration-300 ${focusedField === "name" ? "border-fluo shadow-[0_0_15px_rgba(57,255,20,0.15)]" : ""}`}
                 />
-                {errors.name && <span className="text-red-500 text-[0.8rem]">{errors.name}</span>}
+                {errors.name && <span className="text-red-500 text-[0.7rem] font-mono animate-flicker-in">{errors.name}</span>}
               </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">EMAIL</label>
+              <div className={`flex flex-col gap-1.5 transition-all duration-300 ${focusedField === "email" ? "translate-x-1" : ""}`}>
+                <label className="text-[0.7rem] uppercase tracking-[0.12em] text-secondary font-mono">
+                  <span className="fluo-text mr-1">02</span> COMM CHANNEL
+                </label>
                 <input
-                  type="email"
-                  required
-                  value={form.email}
+                  type="email" required value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="john@example.com"
-                  className="p-3 bg-transparent border border-border text-primary outline-none transition-colors focus:border-fluo"
+                  onFocus={() => setFocusedField("email")} onBlur={() => setFocusedField(null)}
+                  placeholder="your@email.com" className={`input-field transition-all duration-300 ${focusedField === "email" ? "border-fluo shadow-[0_0_15px_rgba(57,255,20,0.15)]" : ""}`}
                 />
-                {errors.email && <span className="text-red-500 text-[0.8rem]">{errors.email}</span>}
+                {errors.email && <span className="text-red-500 text-[0.7rem] font-mono animate-flicker-in">{errors.email}</span>}
               </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">MESSAGE</label>
+              <div className={`flex flex-col gap-1.5 transition-all duration-300 ${focusedField === "message" ? "translate-x-1" : ""}`}>
+                <label className="text-[0.7rem] uppercase tracking-[0.12em] text-secondary font-mono">
+                  <span className="fluo-text mr-1">03</span> PAYLOAD
+                </label>
                 <textarea
-                  required
-                  rows={6}
-                  maxLength={2000}
-                  value={form.message}
+                  required rows={5} maxLength={2000} value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  placeholder="Tell me about your project..."
-                  className="p-3 bg-transparent border border-border text-primary outline-none resize-none transition-colors focus:border-fluo"
+                  onFocus={() => setFocusedField("message")} onBlur={() => setFocusedField(null)}
+                  placeholder="Your message..." className={`input-field resize-none min-h-[110px] transition-all duration-300 ${focusedField === "message" ? "border-fluo shadow-[0_0_15px_rgba(57,255,20,0.15)]" : ""}`}
                 />
-                <span className="text-[0.75rem] text-secondary text-right">{form.message.length}/2000</span>
-                {errors.message && <span className="text-red-500 text-[0.8rem]">{errors.message}</span>}
+                <div className="flex justify-between items-center">
+                  <span className="text-[0.65rem] text-secondary/50 font-mono">{form.message.length}/2000</span>
+                  {errors.message && <span className="text-red-500 text-[0.7rem] font-mono">{errors.message}</span>}
+                </div>
               </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-8 py-4 bg-primary text-bg font-semibold text-[1.1rem] rounded cursor-pointer transition-all hover:opacity-80 hover:-translate-y-0.5 disabled:opacity-50 brand-font"
-              >
-                {loading ? "SENDING..." : "SEND TRANSMISSION →"}
+              <button type="submit" disabled={loading} className="btn-primary w-full md:w-auto mt-1">
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    TRANSMITTING
+                    <span className="flex gap-1">
+                      <span className="typing-dot w-1 h-1 bg-black rounded-full inline-block" />
+                      <span className="typing-dot w-1 h-1 bg-black rounded-full inline-block" />
+                      <span className="typing-dot w-1 h-1 bg-black rounded-full inline-block" />
+                    </span>
+                  </span>
+                ) : "SEND TRANSMISSION →"}
               </button>
             </form>
           )}

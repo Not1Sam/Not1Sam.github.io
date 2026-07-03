@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = resolve(__dirname, '..', 'dist');
 
-const routes = ['/', '/lab', '/projects', '/stack', '/contact', '/blog', '/certificates', '/cv'];
+const routes = ['/', '/lab', '/projects', '/stack', '/contact', '/blog', '/certificates', '/cv', '/privacy', '/terms', '/cookies', '/disclaimer'];
 
 const indexHtml = readFileSync(resolve(distDir, 'index.html'), 'utf-8');
 
@@ -24,6 +24,10 @@ const metaContent: Record<string, { title: string; desc: string }> = {
   '/blog': { title: 'Blog | Not1Sam', desc: 'Technical blog posts and dev logs by Not1Sam.' },
   '/certificates': { title: 'Certificates | Not1Sam', desc: 'Professional certifications and achievements.' },
   '/cv': { title: 'CV | Not1Sam', desc: 'Resume and work experience of Not1Sam.' },
+  '/privacy': { title: 'Privacy Policy | Not1Sam', desc: 'Privacy policy for Not1Sam Portfolio — how we handle data and protect your privacy.' },
+  '/terms': { title: 'Terms of Service | Not1Sam', desc: 'Terms of service and conditions for using Not1Sam Portfolio.' },
+  '/cookies': { title: 'Cookie Policy | Not1Sam', desc: 'Cookie policy for Not1Sam Portfolio — how we use cookies and local storage.' },
+  '/disclaimer': { title: 'Disclaimer | Not1Sam', desc: 'Legal disclaimer for Not1Sam Portfolio — limitations of liability and content accuracy.' },
 };
 
 function getRouteContent(route: string): string {
@@ -148,6 +152,107 @@ function getRouteContent(route: string): string {
             <p style="color:#888;margin-top:1rem">Open source, self-hosting, containerization, and building tools that make a difference.</p>
           </div>
         </section>`;
+    case '/privacy':
+      return `
+        <section>
+          <h1 style="font-size:clamp(2.5rem,6vw,4rem);font-family:'Space Grotesk',sans-serif">Privacy Policy.</h1>
+          <p style="color:#888;font-size:0.85rem;font-family:monospace;margin-bottom:2rem">Last updated: July 3, 2026</p>
+          <div style="display:flex;flex-direction:column;gap:2.5rem;color:#888;line-height:1.6">
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">1. Introduction</h2>
+              <p>Welcome to Not1Sam Portfolio. This privacy policy explains how we collect, use, and protect information when you visit this website and interact with our services.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">2. Information We Collect</h2>
+              <p>When you submit a message through our contact form, we collect your name, email address, and the message content. We do not use cookies, tracking pixels, analytics services, or any third-party tracking tools.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">3. How We Use Your Information</h2>
+              <p>We use contact form submissions solely to respond to your inquiries. We do not sell, share, or use your personal data for marketing purposes.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">4. Data Security</h2>
+              <p>We implement reasonable security measures to protect your data. The backend API is served over HTTPS via Cloudflare Tunnel.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">5. Contact</h2>
+              <p>For questions about this privacy policy, contact us via the /contact page or through GitHub at github.com/Not1Sam.</p>
+            </div>
+          </div>
+        </section>`;
+    case '/terms':
+      return `
+        <section>
+          <h1 style="font-size:clamp(2.5rem,6vw,4rem);font-family:'Space Grotesk',sans-serif">Terms of Service.</h1>
+          <p style="color:#888;font-size:0.85rem;font-family:monospace;margin-bottom:2rem">Last updated: July 3, 2026</p>
+          <div style="display:flex;flex-direction:column;gap:2.5rem;color:#888;line-height:1.6">
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">1. Acceptance of Terms</h2>
+              <p>By accessing and using this website, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, you must not use this website.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">2. Use of This Website</h2>
+              <p>You may browse publicly available content and submit messages through the contact form. You must not attempt to gain unauthorized access to the admin panel or submit spam or malicious content.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">3. Intellectual Property</h2>
+              <p>All content on this website is the property of Houssam Belkasaoui (Not1Sam). The source code is available on GitHub under a restrictive license that prohibits commercial or academic use.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">4. Limitation of Liability</h2>
+              <p>This website is provided "as is" without warranties of any kind. We are not responsible for any damages arising from the use or inability to use this website.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">5. Governing Law</h2>
+              <p>These terms are governed by the laws of Morocco. Any disputes arising from the use of this website shall be resolved in the courts of Morocco.</p>
+            </div>
+          </div>
+        </section>`;
+    case '/cookies':
+      return `
+        <section>
+          <h1 style="font-size:clamp(2.5rem,6vw,4rem);font-family:'Space Grotesk',sans-serif">Cookie Policy.</h1>
+          <p style="color:#888;font-size:0.85rem;font-family:monospace;margin-bottom:2rem">Last updated: July 3, 2026</p>
+          <div style="display:flex;flex-direction:column;gap:2.5rem;color:#888;line-height:1.6">
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">1. What Are Cookies</h2>
+              <p>Cookies are small text files that websites place on your device to store information.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#39ff14;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">2. Our Use of Cookies</h2>
+              <p><strong style="color:#fff">This website does not use cookies.</strong> We do not deploy any first-party cookies, third-party cookies, tracking pixels, or similar technologies.</p>
+              <p style="margin-top:1rem">The only local storage used is localStorage for theme preference, sessionStorage for GitHub API caching, and localStorage for admin authentication tokens.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">3. Third-Party Services</h2>
+              <p>Google Fonts and GitHub may set their own cookies as part of font delivery and navigation. We have no control over cookies set by these external services.</p>
+            </div>
+          </div>
+        </section>`;
+    case '/disclaimer':
+      return `
+        <section>
+          <h1 style="font-size:clamp(2.5rem,6vw,4rem);font-family:'Space Grotesk',sans-serif">Disclaimer.</h1>
+          <p style="color:#888;font-size:0.85rem;font-family:monospace;margin-bottom:2rem">Last updated: July 3, 2026</p>
+          <div style="display:flex;flex-direction:column;gap:2.5rem;color:#888;line-height:1.6">
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">1. General Information</h2>
+              <p>The information provided on this website is for general informational purposes only. We make no representation or warranty regarding the accuracy, adequacy, or completeness of any information on the site.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">2. Project and Code Disclaimer</h2>
+              <p>Code examples, projects, and technical demonstrations are provided "as is" without warranty of any kind. The source code is available on GitHub under a restrictive license that prohibits any commercial or academic use.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">3. Limitation of Liability</h2>
+              <p>In no event shall we be liable for any loss or damage arising from the use of this website, including indirect or consequential loss or damage.</p>
+            </div>
+            <div>
+              <h2 style="font-size:1.3rem;color:#fff;font-family:'Space Grotesk',sans-serif;margin-bottom:1rem">4. Contact</h2>
+              <p>If you have any questions about this disclaimer, please contact us via the /contact page or through GitHub at github.com/Not1Sam.</p>
+            </div>
+          </div>
+        </section>`;
     default:
       return '';
   }
@@ -163,28 +268,35 @@ function generateHtml(route: string, content: string) {
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#39ff14" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
     <meta name="description" content="${meta.desc}" />
-    <meta name="keywords" content="Not1Sam, Houssam Belkasaoui, Software Engineer, Portfolio, Morocco, React, Node.js, Open Source, Docker, Python, FastAPI" />
+    <meta name="keywords" content="Not1Sam, Houssam Belkasaoui, Software Engineer, Portfolio, Morocco, React, Docker, Python, FastAPI" />
     <meta property="og:title" content="${meta.title}" />
     <meta property="og:description" content="${meta.desc}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="${canonicalUrl}" />
-    <meta property="og:site_name" content="Not1Sam Portfolio" />
+    <meta property="og:site_name" content="Not1Sam" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="${meta.title}" />
     <meta name="twitter:description" content="${meta.desc}" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href="${canonicalUrl}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://x7k9m2.bungus.fyi" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     ${cssLinks}
     <title>${meta.title}</title>
   </head>
-  <body style="background:#000;color:#fff;font-family:Inter,sans-serif;margin:0">
+  <body style="background:#03080a;color:#e0f2f7;font-family:Inter,sans-serif;margin:0;overflow-x:hidden">
     <div id="root">
-      <main style="max-width:1200px;margin:0 auto;padding:2rem">
+      <main style="max-width:1200px;margin:0 auto;padding:1.5rem">
         ${content}
       </main>
     </div>

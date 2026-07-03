@@ -2,6 +2,10 @@
 
 Personal portfolio website for Houssam Belkasaoui (Not1Sam) — Software Engineer from Morocco.
 
+## License
+
+**This project uses a custom restrictive license.** You may view and study the source code for personal, non-commercial, and educational purposes only. Commercial use, academic submissions, redistribution, and derivative works are strictly prohibited. See [LICENSE.md](LICENSE.md) for full details.
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -102,8 +106,29 @@ Pushes to `main` branch auto-deploy to https://not1sam.github.io via GitHub Acti
 | `/api/certificates` | POST | Admin | Upload certificate |
 | `/api/contact` | POST | Public | Submit contact message |
 | `/api/contact` | GET | Admin | List messages |
+| `/api/cv` | GET | Public | Get current CV |
+| `/api/cv` | POST | Admin | Upload CV (PDF) |
+| `/api/cv` | DELETE | Admin | Delete CV |
 | `/api/health` | GET | Public | Health check |
+
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home — Hero, GitHub stats, project overview |
+| `/lab` | Self-hosted homelab infrastructure |
+| `/projects` | Live GitHub repositories |
+| `/stack` | Tech stack and skills |
+| `/blog` | Blog posts from the API |
+| `/certificates` | Professional certifications |
+| `/cv` | CV with PDF viewer and skills view |
+| `/contact` | Contact form |
+| `/admin` | Admin panel (password-only auth) |
+| `/privacy` | Privacy Policy |
+| `/terms` | Terms of Service |
+| `/cookies` | Cookie Policy |
+| `/disclaimer` | Disclaimer |
 
 ## License
 
-MIT
+Custom restrictive license — no commercial, academic, or gainful use allowed. See [LICENSE.md](LICENSE.md).

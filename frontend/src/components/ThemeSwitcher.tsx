@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 
 const themes = [
-  { id: "dark", label: "Dark" },
-  { id: "light", label: "Light" },
-  { id: "purple", label: "Purple" },
+  { id: "dark", label: "DK" },
+  { id: "light", label: "LT" },
+  { id: "purple", label: "PR" },
 ];
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState("dark");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") || "dark";
-    setTheme(saved);
-  }, []);
+  useEffect(() => { setTheme(localStorage.getItem("theme") || "dark"); }, []);
 
   const switchTheme = (id: string) => {
     setTheme(id);
@@ -24,26 +20,16 @@ export function ThemeSwitcher() {
   const buttonWidth = 100 / themes.length;
 
   return (
-    <div
-      className="relative flex bg-border rounded-full p-1"
-      style={{ width: `${themes.length * 70}px` }}
-    >
+    <div className="relative flex bg-border/50 rounded p-0.5" style={{ width: `${themes.length * 42}px` }} role="radiogroup" aria-label="Theme selection">
       <div
-        className="absolute top-1 left-1 h-[calc(100%-8px)] bg-primary rounded-full transition-transform duration-300 z-10"
-        style={{
-          width: `calc(${buttonWidth}% - 6px)`,
-          transform: `translateX(${idx >= 0 ? idx * 100 : 0}%)`,
-          transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        }}
+        className="absolute top-0.5 left-0.5 h-[calc(100%-4px)] bg-fluo/20 border border-fluo/40 rounded transition-all duration-300 z-10"
+        style={{ width: `calc(${buttonWidth}% - 4px)`, transform: `translateX(${idx >= 0 ? idx * 100 : 0}%)`, transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
       />
       {themes.map((t) => (
-        <button
-          key={t.id}
-          onClick={() => switchTheme(t.id)}
-          className={`relative z-20 flex-1 bg-transparent border-none font-[inherit] text-[0.75rem] font-semibold uppercase tracking-widest py-1.5 cursor-pointer transition-colors duration-300 ${
-            theme === t.id ? "text-bg" : "text-secondary hover:text-primary"
-          }`}
-        >
+        <button key={t.id} onClick={() => switchTheme(t.id)} role="radio" aria-checked={theme === t.id} aria-label={`${t.id} theme`}
+          className={`relative z-20 flex-1 bg-transparent border-none font-[inherit] text-[0.6rem] font-bold uppercase tracking-widest py-1.5 cursor-pointer transition-colors duration-300 ${
+            theme === t.id ? "text-fluo" : "text-secondary/60 hover:text-secondary"
+          }`}>
           {t.label}
         </button>
       ))}

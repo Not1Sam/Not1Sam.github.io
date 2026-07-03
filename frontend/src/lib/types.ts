@@ -39,3 +39,11 @@ export interface GitHubEvent {
   created_at: string;
   repo: { name: string };
 }
+
+export interface CVData {
+  id: string;
+  filename: string;
+  file_path: string;
+  original_name: string;
+  uploaded_at: string;
+}

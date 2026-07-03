@@ -53,6 +53,16 @@ class CertificateResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class CVResponse(BaseModel):
+    id: str
+    filename: str
+    file_path: str
+    original_name: str
+    uploaded_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"

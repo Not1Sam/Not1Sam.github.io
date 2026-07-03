@@ -40,3 +40,13 @@ class Certificate(Base):
     image_path: Mapped[str] = mapped_column(String(500))
     credential_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+class CV(Base):
+    __tablename__ = "cv"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    filename: Mapped[str] = mapped_column(String(500))
+    file_path: Mapped[str] = mapped_column(String(500))
+    original_name: Mapped[str] = mapped_column(String(500))
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

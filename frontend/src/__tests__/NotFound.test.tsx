@@ -10,7 +10,6 @@ describe('NotFound', () => {
         <NotFound />
       </MemoryRouter>
     );
-
     expect(screen.getByText('404')).toBeInTheDocument();
   });
 
@@ -20,8 +19,7 @@ describe('NotFound', () => {
         <NotFound />
       </MemoryRouter>
     );
-
-    expect(screen.getByText('Signal Lost.')).toBeInTheDocument();
+    expect(screen.getByText('SIGNAL LOST.')).toBeInTheDocument();
   });
 
   it('has a link back to home', () => {
@@ -30,8 +28,7 @@ describe('NotFound', () => {
         <NotFound />
       </MemoryRouter>
     );
-
-    const homeLink = screen.getByText('Return to INIT →');
+    const homeLink = screen.getByText('RETURN TO INIT →');
     expect(homeLink).toBeInTheDocument();
     expect(homeLink).toHaveAttribute('href', '/');
   });
