@@ -37,3 +37,6 @@ frontend/.DS_Store
 # Obsidian vault + memory (local only, not committed)
 .obsidian/
 memory/
+
+# Local artifacts
+ARTIFACT.md
