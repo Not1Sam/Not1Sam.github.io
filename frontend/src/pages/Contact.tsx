@@ -2,22 +2,44 @@ import { useState } from "react";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://x7k9m2.bungus.fyi";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const validate = (): boolean => {
+    const newErrors: typeof errors = {};
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!EMAIL_REGEX.test(form.email)) {
+      newErrors.email = "Invalid email format";
+    }
+    if (!form.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (form.message.length > 2000) {
+      newErrors.message = "Message must be under 2000 characters";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
     try {
       await fetch(`${API_BASE}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim() }),
       });
       setSubmitted(true);
       setForm({ name: "", email: "", message: "" });
+      setErrors({});
     } catch (err) {
       console.error(err);
     }

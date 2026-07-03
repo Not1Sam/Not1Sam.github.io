@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './components/ThemeProvider'
 import { CustomCursor } from './components/CustomCursor'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { SEO } from './components/SEO'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Home } from './pages/Home'
@@ -19,10 +21,12 @@ function App() {
     <ThemeProvider>
       <CustomCursor />
       <Router>
+        <SEO />
         <div className="w-full max-w-[100%] px-[4vw] min-h-screen flex flex-col">
           <Header />
-          <main className="flex-1 flex flex-col">
-            <Routes>
+          <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
+            <ErrorBoundary>
+              <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/lab" element={<Lab />} />
               <Route path="/projects" element={<Projects />} />
@@ -33,7 +37,8 @@ function App() {
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/cv" element={<CV />} />
               <Route path="*" element={<NotFound />} />
-            </Routes>
+              </Routes>
+            </ErrorBoundary>
           </main>
           <Footer />
         </div>

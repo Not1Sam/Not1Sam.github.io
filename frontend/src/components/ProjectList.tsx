@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { githubFetch } from "../lib/github";
 
 interface Repo {
   id: number;
@@ -13,18 +14,34 @@ interface Repo {
 export function ProjectList() {
   const [projects, setProjects] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("https://api.github.com/users/Not1Sam/repos?sort=updated&per_page=12")
-      .then((r) => r.json())
+    githubFetch<Repo[]>("https://api.github.com/users/Not1Sam/repos?sort=updated&per_page=12")
       .then((data) => {
         setProjects(data.filter((r: Repo) => !r.fork));
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        setError(err?.message || "Failed to load projects");
+        setLoading(false);
+      });
   }, []);
 
   if (loading) return <div className="spinner" />;
+
+  if (error) {
+    return (
+      <section className="py-16 border-t border-border">
+        <div className="flex justify-between items-baseline mb-12 animate-fade-in max-md:flex-col max-md:gap-4">
+          <h2 className="text-[2.5rem] tracking-tight brand-font">Selected Work.</h2>
+        </div>
+        <div className="bento-box bg-bg/40 p-10 text-center">
+          <p className="text-secondary text-[0.95rem]">{error}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 border-t border-border">

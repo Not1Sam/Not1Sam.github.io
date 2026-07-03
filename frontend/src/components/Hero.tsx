@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { GithubActivity } from "./GithubActivity";
+import { githubFetch } from "../lib/github";
 
 export function Hero() {
   const [profile, setProfile] = useState<any>(null);
@@ -12,8 +13,7 @@ export function Hero() {
     "I build Systems that work and are scalable. | \n Networking enthusiast. | \n Homelaber. ";
 
   useEffect(() => {
-    fetch("https://api.github.com/users/Not1Sam")
-      .then((r) => r.json())
+    githubFetch<any>("https://api.github.com/users/Not1Sam")
       .then((d) => { setProfile(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);

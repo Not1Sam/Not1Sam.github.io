@@ -1,47 +1,73 @@
 import { useEffect, useState } from "react";
+import { githubFetch } from "../lib/github";
 
 export function GithubActivity() {
   const [profile, setProfile] = useState<any>(null);
   const [commits, setCommits] = useState<string>("...");
   const [prs, setPrs] = useState<string>("...");
   const [heat, setHeat] = useState<number[]>(new Array(60).fill(0));
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("https://api.github.com/users/Not1Sam")
-      .then((r) => r.json())
-      .then(setProfile)
-      .catch(console.error);
+    const fetchData = async () => {
+      try {
+        const [profileData, commitsData, prsData, eventsData] = await Promise.allSettled([
+          githubFetch<any>("https://api.github.com/users/Not1Sam"),
+          githubFetch<any>("https://api.github.com/search/commits?q=author:Not1Sam", {
+            headers: { Accept: "application/vnd.github.cloak-preview" },
+          }),
+          githubFetch<any>("https://api.github.com/search/issues?q=author:Not1Sam+type:pr"),
+          githubFetch<any[]>("https://api.github.com/users/Not1Sam/events/public?per_page=100"),
+        ]);
 
-    fetch("https://api.github.com/search/commits?q=author:Not1Sam", {
-      headers: { Accept: "application/vnd.github.cloak-preview" },
-    })
-      .then((r) => r.json())
-      .then((d) => setCommits(String(d.total_count || 0)))
-      .catch(console.error);
+        if (profileData.status === "fulfilled") setProfile(profileData.value);
+        if (commitsData.status === "fulfilled") setCommits(String(commitsData.value.total_count || 0));
+        if (prsData.status === "fulfilled") setPrs(String(prsData.value.total_count || 0));
 
-    fetch("https://api.github.com/search/issues?q=author:Not1Sam+type:pr")
-      .then((r) => r.json())
-      .then((d) => setPrs(String(d.total_count || 0)))
-      .catch(console.error);
+        if (eventsData.status === "fulfilled" && Array.isArray(eventsData.value)) {
+          const h = new Array(60).fill(0);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          eventsData.value.forEach((e: any) => {
+            const d = new Date(e.created_at);
+            d.setHours(0, 0, 0, 0);
+            const diff = Math.floor(Math.abs(today.getTime() - d.getTime()) / 86400000);
+            if (diff < 60) h[59 - diff] += 1;
+          });
+          const max = Math.max(...h, 1);
+          setHeat(h.map((v) => (v === 0 ? 0 : Math.ceil((v / max) * 4))));
+        }
 
-    fetch("https://api.github.com/users/Not1Sam/events/public?per_page=100")
-      .then((r) => r.json())
-      .then((data) => {
-        if (!Array.isArray(data)) return;
-        const h = new Array(60).fill(0);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        data.forEach((e: any) => {
-          const d = new Date(e.created_at);
-          d.setHours(0, 0, 0, 0);
-          const diff = Math.floor(Math.abs(today.getTime() - d.getTime()) / 86400000);
-          if (diff < 60) h[59 - diff] += 1;
-        });
-        const max = Math.max(...h, 1);
-        setHeat(h.map((v) => (v === 0 ? 0 : Math.ceil((v / max) * 4))));
-      })
-      .catch(console.error);
+        const rejected = [profileData, commitsData, prsData, eventsData].filter(
+          (r) => r.status === "rejected"
+        );
+        if (rejected.length > 0) {
+          const firstError = (rejected[0] as PromiseRejectedResult).reason;
+          setError(firstError?.message || "Failed to load some GitHub data");
+        }
+      } catch (err: any) {
+        setError(err?.message || "Failed to load GitHub data");
+      }
+    };
+
+    fetchData();
   }, []);
+
+  if (error) {
+    return (
+      <div className="mt-20 w-full animate-fade-in" style={{ animationDelay: "0.3s" }}>
+        <div className="mb-8">
+          <span className="text-[0.85rem] font-semibold tracking-[0.15em] uppercase mb-2 block fluo-text">
+            ACTIVITY MONITOR
+          </span>
+          <h2 className="text-[clamp(3rem,6vw,4rem)] tracking-tight brand-font">GitHub.</h2>
+        </div>
+        <div className="bento-box bg-bg/40 p-10 text-center">
+          <p className="text-secondary text-[0.95rem]">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-20 w-full animate-fade-in" style={{ animationDelay: "0.3s" }}>
