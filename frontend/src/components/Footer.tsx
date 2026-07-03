@@ -25,7 +25,7 @@ export function Footer() {
           [ Houssam Belkassaoui ] © {new Date().getFullYear()}
         </p>
         <p className="brand-font opacity-70 tracking-[2px]">
-          Version 1.0.1
+          Version {__APP_VERSION__}
         </p>
       </div>
     </footer>
