@@ -17,6 +17,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://localhost:3000",
         "https://not1sam.github.io",
+        "https://x7k9m2.bungus.fyi",
         "http://84.8.221.29",
         "http://84.8.221.29:8001",
     ]

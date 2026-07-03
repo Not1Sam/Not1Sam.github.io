@@ -34,16 +34,13 @@ COPY . .
 RUN adduser --disabled-password --gecos '' appuser && \
     chown -R appuser:appuser $WORKDIR && \
     mkdir -p $WORKDIR/uploads && \
-    chown -R appuser:appuser $WORKDIR/uploads && \
-    openssl req -x509 -newkey rsa:2048 -keyout /app/key.pem -out /app/cert.pem \
-    -days 3650 -nodes -subj "/CN=not1sam-backend" && \
-    chown appuser:appuser /app/key.pem /app/cert.pem
+    chown -R appuser:appuser $WORKDIR/uploads
 
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider --no-check-certificate https://127.0.0.1:8000/api/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:8000/api/health || exit 1
 
 USER appuser
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/app/key.pem", "--ssl-certfile", "/app/cert.pem"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://84.8.221.29:8001";
+const API_BASE = import.meta.env.VITE_API_URL || "https://x7k9m2.bungus.fyi";
 
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
