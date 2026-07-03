@@ -130,7 +130,7 @@ jobs:
         run: |
           if [ -n "${{ secrets.PORTAINER_WEBHOOK_URL }}" ]; then
             echo "Triggering Portainer webhook..."
-            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}")
+            RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}")
             if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "201" ] || [ "$RESPONSE" = "204" ]; then
               echo "Webhook triggered successfully (HTTP $RESPONSE)"
             else
