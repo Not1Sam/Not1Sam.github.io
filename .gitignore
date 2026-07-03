@@ -14,8 +14,9 @@ dist-ssr/
 .DS_Store
 *.sw?
 
-# Environment
-.env
+# Environment (ignore in subdirs, root .env is for docker-compose VERSION)
+backend/.env
+frontend/.env
 .env.local
 .env.*.local
 

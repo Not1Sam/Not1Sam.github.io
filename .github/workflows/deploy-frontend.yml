@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths-ignore:
       - 'VERSION'
-      - 'compose.env'
+      - '.env'
       - 'docker-compose.yml'
       - 'memory/**'
       - 'backend/**'

@@ -106,20 +106,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update VERSION and compose.env
+      - name: Update VERSION and .env
         env:
           VERSION: ${{ needs.prepare-version.outputs.version }}
         run: |
           echo "$VERSION" > VERSION
-          echo "VERSION=$VERSION" > compose.env
+          echo "VERSION=$VERSION" > .env
           echo "VERSION: $(cat VERSION)"
-          echo "compose.env: $(cat compose.env)"
+          echo ".env: $(cat .env)"
 
       - name: Commit version updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: bump version to ${{ needs.prepare-version.outputs.version }}"
-          file_pattern: VERSION compose.env
+          file_pattern: VERSION .env
 
       - name: Trigger Portainer Webhook
         run: |
