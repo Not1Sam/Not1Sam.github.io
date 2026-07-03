@@ -1,7 +1,8 @@
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -22,6 +23,30 @@ async def get_cv(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(CV).order_by(CV.uploaded_at.desc()).limit(1))
     cv = result.scalar_one_or_none()
     return cv
+
+
+@router.get("/file")
+async def get_cv_file(
+    db: AsyncSession = Depends(get_db),
+    _admin: dict = Depends(get_current_admin),
+):
+    result = await db.execute(select(CV).order_by(CV.uploaded_at.desc()).limit(1))
+    cv = result.scalar_one_or_none()
+    if not cv:
+        raise HTTPException(status_code=404, detail="No CV found")
+    filepath = settings.UPLOAD_DIR / cv.filename
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="CV file not found")
+    return FileResponse(
+        filepath,
+        media_type="application/pdf",
+        filename=cv.original_name,
+        headers={
+            "X-Frame-Options": "SAMEORIGIN",
+            "Content-Security-Policy": "frame-ancestors 'self' https://not1sam.github.io",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
 
 
 @router.post("", response_model=CVResponse, status_code=201)

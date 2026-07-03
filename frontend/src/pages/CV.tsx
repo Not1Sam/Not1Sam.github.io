@@ -69,7 +69,7 @@ export function CV() {
 
         {viewMode === "embedded" && cv ? (
           <div className="border border-border overflow-hidden bg-white" style={{ height: "calc(100vh - 280px)", minHeight: "400px" }}>
-            <iframe src={`${API_BASE}${cv.file_path}#toolbar=1&navpanes=1&scrollbar=1`} className="w-full h-full border-none" title="CV PDF" />
+            <iframe src={`${API_BASE}/api/cv/file#toolbar=1&navpanes=1&scrollbar=1`} className="w-full h-full border-none" title="CV PDF" />
           </div>
         ) : (
           <div className="flex flex-col gap-8 md:gap-10">
