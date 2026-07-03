@@ -5,15 +5,6 @@ import type { BlogPost, CVData } from "../lib/types";
 
 interface ContactMessage { id: string; name: string; email: string; message: string; created_at: string; }
 
-function getCsrfToken(): string {
-  let token = document.cookie.split("; ").find((c) => c.startsWith("csrf_token="))?.split("=")[1];
-  if (!token) {
-    token = crypto.randomUUID();
-    document.cookie = `csrf_token=${token}; SameSite=Strict; Path=/`;
-  }
-  return token;
-}
-
 export function Admin() {
   const [token, setToken] = useState<string | null>(null);
   const [password, setPassword] = useState("");
@@ -35,14 +26,11 @@ export function Admin() {
   useEffect(() => { const s = localStorage.getItem("admin_token"); if (s) setToken(s); }, []);
   useEffect(() => { if (token) { loadInbox(); loadPosts(); loadCv(); } }, [token]);
 
-  const authHeaders = (): Record<string, string> => ({
-    Authorization: `Bearer ${token}`,
-    "X-CSRF-Token": getCsrfToken(),
-  });
+  const authHeaders = { Authorization: `Bearer ${token}` };
 
-  const loadInbox = async () => { try { const r = await fetch(`${API_BASE}/api/contact`, { headers: authHeaders() }); if (r.ok) setInbox(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load inbox"); } };
+  const loadInbox = async () => { try { const r = await fetch(`${API_BASE}/api/contact`, { headers: authHeaders }); if (r.ok) setInbox(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load inbox"); } };
   const loadPosts = async () => { try { const r = await fetch(`${API_BASE}/api/blog`); if (r.ok) setPosts(await r.json()); } catch { toastMsg("Failed to load posts"); } };
-  const loadCv = async () => { try { const r = await fetch(`${API_BASE}/api/cv`, { headers: authHeaders() }); if (r.ok) setCv(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load CV"); } };
+  const loadCv = async () => { try { const r = await fetch(`${API_BASE}/api/cv`, { headers: authHeaders }); if (r.ok) setCv(await r.json()); else if (r.status === 401) handleLogout(); } catch { toastMsg("Failed to load CV"); } };
 
   const toastMsg = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
@@ -54,7 +42,7 @@ export function Admin() {
     try {
       const r = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded", "X-CSRF-Token": getCsrfToken() },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username: "", password }),
       });
       if (r.ok) { const d = await r.json(); localStorage.setItem("admin_token", d.access_token); setToken(d.access_token); setError(""); }
@@ -83,7 +71,7 @@ export function Admin() {
       const url = editingPost ? `${API_BASE}/api/blog/${editingPost.id}` : `${API_BASE}/api/blog`;
       const r = await fetch(url, {
         method: editingPost ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders() },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify({ title: t, excerpt: ex, content: co }),
       });
       if (r.ok) { resetForm(); toastMsg(editingPost ? "Post updated." : "Post published."); loadPosts(); } else toastMsg("Save failed.");
@@ -94,12 +82,12 @@ export function Admin() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this post?")) return;
-    try { const r = await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setPosts(posts.filter((p) => p.id !== id)); toastMsg("Post deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setPosts(posts.filter((p) => p.id !== id)); toastMsg("Post deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   const handleDeleteInbox = async (id: string) => {
     if (!confirm("Delete message?")) return;
-    try { const r = await fetch(`${API_BASE}/api/contact/${id}`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setInbox(inbox.filter((m) => m.id !== id)); toastMsg("Message deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/contact/${id}`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setInbox(inbox.filter((m) => m.id !== id)); toastMsg("Message deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   const handleCvUpload = async () => {
@@ -111,7 +99,7 @@ export function Admin() {
     setCvUploading(true);
     try {
       const fd = new FormData(); fd.append("file", cvFile);
-      const r = await fetch(`${API_BASE}/api/cv`, { method: "POST", headers: { ...authHeaders() }, body: fd });
+      const r = await fetch(`${API_BASE}/api/cv`, { method: "POST", headers: { ...authHeaders }, body: fd });
       if (r.ok) { setCv(await r.json()); setCvFile(null); toastMsg("CV uploaded."); }
       else { const e = await r.json(); toastMsg(e.detail || "Upload failed."); }
     } catch { toastMsg("Connection failed."); } finally { setCvUploading(false); }
@@ -119,7 +107,7 @@ export function Admin() {
 
   const handleCvDelete = async () => {
     if (!confirm("Delete CV?")) return;
-    try { const r = await fetch(`${API_BASE}/api/cv`, { method: "DELETE", headers: authHeaders() }); if (r.ok) { setCv(null); toastMsg("CV deleted."); } } catch { toastMsg("Delete failed."); }
+    try { const r = await fetch(`${API_BASE}/api/cv`, { method: "DELETE", headers: authHeaders }); if (r.ok) { setCv(null); toastMsg("CV deleted."); } } catch { toastMsg("Delete failed."); }
   };
 
   if (!token) {

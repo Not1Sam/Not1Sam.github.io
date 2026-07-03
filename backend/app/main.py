@@ -36,7 +36,7 @@ app.add_middleware(
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-CSRF-Token"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 
@@ -51,18 +51,6 @@ async def security_headers(request: Request, call_next):
     response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
     response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://x7k9m2.bungus.fyi https://api.github.com; frame-ancestors 'none'"
     return response
-
-
-@app.middleware("http")
-async def csrf_protection(request: Request, call_next):
-    if request.method in ("POST", "PUT", "DELETE"):
-        cookie_token = request.cookies.get("csrf_token")
-        header_token = request.headers.get("X-CSRF-Token")
-        if not cookie_token or not header_token or cookie_token != header_token:
-            path = request.url.path
-            if path.startswith("/api/") and path != "/api/health" and path != "/api/auth/login":
-                return JSONResponse(status_code=403, content={"detail": "CSRF token mismatch"})
-    return await call_next(request)
 
 
 app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
