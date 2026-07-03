@@ -1,25 +1,17 @@
 import { useEffect, useState } from "react";
 import { githubFetch } from "../lib/github";
-
-interface Repo {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-  language: string | null;
-  stargazers_count: number;
-  fork: boolean;
-}
+import { GITHUB_USERNAME } from "../lib/constants";
+import type { GitHubRepo } from "../lib/types";
 
 export function ProjectList() {
-  const [projects, setProjects] = useState<Repo[]>([]);
+  const [projects, setProjects] = useState<GitHubRepo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    githubFetch<Repo[]>("https://api.github.com/users/Not1Sam/repos?sort=updated&per_page=12")
+    githubFetch<GitHubRepo[]>(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`)
       .then((data) => {
-        setProjects(data.filter((r: Repo) => !r.fork));
+        setProjects(data.filter((r) => !r.fork));
         setLoading(false);
       })
       .catch((err) => {
@@ -48,7 +40,7 @@ export function ProjectList() {
       <div className="flex justify-between items-baseline mb-12 animate-fade-in max-md:flex-col max-md:gap-4">
         <h2 className="text-[2.5rem] tracking-tight brand-font">Selected Work.</h2>
         <a
-          href="https://github.com/Not1Sam"
+          href={`https://github.com/${GITHUB_USERNAME}`}
           target="_blank"
           rel="noreferrer"
           className="text-[0.9rem] font-medium uppercase tracking-widest text-secondary hover:text-primary"

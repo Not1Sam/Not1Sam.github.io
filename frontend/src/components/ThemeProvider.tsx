@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     const saved = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", saved);
-    setMounted(true);
   }, []);
-
-  if (!mounted) return <>{children}</>;
 
   return <>{children}</>;
 }

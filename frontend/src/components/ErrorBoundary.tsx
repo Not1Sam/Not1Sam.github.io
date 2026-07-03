@@ -30,6 +30,8 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const isDev = import.meta.env.DEV;
+
       return (
         <div className="flex flex-col items-center justify-center py-20 px-8 text-center">
           <div className="text-fluo text-[3rem] mb-4">⚠</div>
@@ -39,6 +41,13 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="text-secondary text-[0.95rem] mb-6 max-w-[400px]">
             An unexpected error occurred. Please try refreshing the page.
           </p>
+          {isDev && this.state.error && (
+            <pre className="text-red-500 text-[0.8rem] text-left bg-[#1a1a1a] p-4 rounded mb-6 max-w-[600px] overflow-auto w-full">
+              {this.state.error.message}
+              {"\n"}
+              {this.state.error.stack}
+            </pre>
+          )}
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-3 bg-primary text-bg font-semibold rounded hover:opacity-80 transition-opacity"

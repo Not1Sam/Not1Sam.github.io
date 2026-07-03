@@ -1,39 +1,14 @@
 from datetime import datetime, timedelta, timezone
-import re
 
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from app.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 ALGORITHM = "HS256"
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def validate_password(password: str) -> list[str]:
-    errors = []
-    rules = [
-        (r".{8,}", "Password must be at least 8 characters"),
-        (r"[A-Z]", "Password must contain an uppercase letter"),
-        (r"[a-z]", "Password must contain a lowercase letter"),
-        (r"[0-9]", "Password must contain a digit"),
-    ]
-    for pattern, msg in rules:
-        if not re.search(pattern, password):
-            errors.append(msg)
-    return errors
 
 
 def create_access_token(data: dict) -> str:

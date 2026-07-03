@@ -4,6 +4,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const links = [
   { href: "/", label: "[ init ]" },
+  { href: "/lab", label: "[ lab ]" },
   { href: "/stack", label: "[ stack ]" },
   { href: "/projects", label: "[ projects ]" },
   { href: "/blog", label: "[ logs ]" },

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { githubFetch } from "../lib/github";
+import { GITHUB_USERNAME, HEATMAP_COLORS } from "../lib/constants";
+import type { GitHubProfile, GitHubSearchCount, GitHubEvent } from "../lib/types";
 
 export function GithubActivity() {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<GitHubProfile | null>(null);
   const [commits, setCommits] = useState<string>("...");
   const [prs, setPrs] = useState<string>("...");
   const [heat, setHeat] = useState<number[]>(new Array(60).fill(0));
@@ -12,12 +14,12 @@ export function GithubActivity() {
     const fetchData = async () => {
       try {
         const [profileData, commitsData, prsData, eventsData] = await Promise.allSettled([
-          githubFetch<any>("https://api.github.com/users/Not1Sam"),
-          githubFetch<any>("https://api.github.com/search/commits?q=author:Not1Sam", {
+          githubFetch<GitHubProfile>(`https://api.github.com/users/${GITHUB_USERNAME}`),
+          githubFetch<GitHubSearchCount>(`https://api.github.com/search/commits?q=author:${GITHUB_USERNAME}`, {
             headers: { Accept: "application/vnd.github.cloak-preview" },
           }),
-          githubFetch<any>("https://api.github.com/search/issues?q=author:Not1Sam+type:pr"),
-          githubFetch<any[]>("https://api.github.com/users/Not1Sam/events/public?per_page=100"),
+          githubFetch<GitHubSearchCount>(`https://api.github.com/search/issues?q=author:${GITHUB_USERNAME}+type:pr`),
+          githubFetch<GitHubEvent[]>(`https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=100`),
         ]);
 
         if (profileData.status === "fulfilled") setProfile(profileData.value);
@@ -28,7 +30,7 @@ export function GithubActivity() {
           const h = new Array(60).fill(0);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          eventsData.value.forEach((e: any) => {
+          eventsData.value.forEach((e) => {
             const d = new Date(e.created_at);
             d.setHours(0, 0, 0, 0);
             const diff = Math.floor(Math.abs(today.getTime() - d.getTime()) / 86400000);
@@ -45,8 +47,8 @@ export function GithubActivity() {
           const firstError = (rejected[0] as PromiseRejectedResult).reason;
           setError(firstError?.message || "Failed to load some GitHub data");
         }
-      } catch (err: any) {
-        setError(err?.message || "Failed to load GitHub data");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load GitHub data");
       }
     };
 
@@ -94,19 +96,11 @@ export function GithubActivity() {
           {heat.map((lvl, i) => (
             <div
               key={i}
-              className={`w-5 h-5 rounded transition-all duration-300 ${
-                i === 59 ? "relative" : ""
-              } ${
-                lvl === 0
-                  ? "bg-[#1a1a1a]"
-                  : lvl === 1
-                  ? "bg-[#2b3314]"
-                  : lvl === 2
-                  ? "bg-[#556b26]"
-                  : lvl === 3
-                  ? "bg-[#8fa814]"
-                  : "bg-fluo shadow-[0_0_8px_rgba(57,255,20,0.3)]"
-              }`}
+              className="w-5 h-5 rounded transition-all duration-300"
+              style={{
+                backgroundColor: HEATMAP_COLORS[lvl as keyof typeof HEATMAP_COLORS],
+                boxShadow: lvl === 4 ? "0 0 8px rgba(57, 255, 20, 0.3)" : undefined,
+              }}
             />
           ))}
         </div>
@@ -117,15 +111,8 @@ export function GithubActivity() {
             {[1, 2, 3, 4].map((l) => (
               <div
                 key={l}
-                className={`w-3.5 h-3.5 rounded-sm ${
-                  l === 1
-                    ? "bg-[#2b3314]"
-                    : l === 2
-                    ? "bg-[#556b26]"
-                    : l === 3
-                    ? "bg-[#8fa814]"
-                    : "bg-fluo"
-                }`}
+                className="w-3.5 h-3.5 rounded-sm"
+                style={{ backgroundColor: HEATMAP_COLORS[l as keyof typeof HEATMAP_COLORS] }}
               />
             ))}
           </div>

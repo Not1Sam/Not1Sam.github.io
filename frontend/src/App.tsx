@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import { ThemeProvider } from './components/ThemeProvider'
 import { CustomCursor } from './components/CustomCursor'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -16,11 +17,18 @@ import { Certificates } from './pages/Certificates'
 import { CV } from './pages/CV'
 import { NotFound } from './pages/NotFound'
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <ThemeProvider>
       <CustomCursor />
       <Router>
+        <ScrollToTop />
         <SEO />
         <div className="w-full max-w-[100%] px-[4vw] min-h-screen flex flex-col">
           <Header />

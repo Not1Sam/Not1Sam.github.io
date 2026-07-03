@@ -1,11 +1,6 @@
-export function Stack() {
-  const stack = {
-    languages: ["JavaScript", "TypeScript", "C++", "Python", "PHP", "C"],
-    frontend: ["React", "Next.js", "HTML5", "CSS3", "Tailwind CSS"],
-    backend: ["Node.js", "Express", "Prisma ORM", "REST APIs"],
-    devops: ["Docker", "Unraid", "Nginx", "Git", "Dev Containers"],
-  };
+import { SKILLS } from "../lib/skills";
 
+export function Stack() {
   return (
     <div className="py-8">
       <section className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
@@ -21,10 +16,10 @@ export function Stack() {
 
         <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1">
           {[
-            { title: "Languages", items: stack.languages },
-            { title: "Frontend", items: stack.frontend },
-            { title: "Backend & DB", items: stack.backend },
-            { title: "Infrastructure & Tools", items: stack.devops },
+            { title: "Languages", items: SKILLS.languages },
+            { title: "Frontend", items: SKILLS.frontend },
+            { title: "Backend & DB", items: SKILLS.backend },
+            { title: "Infrastructure & Tools", items: SKILLS.devops },
           ].map((cat, ci) => (
             <div
               key={cat.title}

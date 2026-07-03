@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Text, DateTime, func
+from sqlalchemy import String, Text, DateTime, Index, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -8,6 +8,7 @@ from app.database import Base
 
 class ContactMessage(Base):
     __tablename__ = "contact_messages"
+    __table_args__ = (Index("ix_contact_created_at", "created_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name: Mapped[str] = mapped_column(String(100))
@@ -18,6 +19,7 @@ class ContactMessage(Base):
 
 class BlogPost(Base):
     __tablename__ = "blog_posts"
+    __table_args__ = (Index("ix_blog_created_at", "created_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title: Mapped[str] = mapped_column(String(200))
@@ -29,6 +31,7 @@ class BlogPost(Base):
 
 class Certificate(Base):
     __tablename__ = "certificates"
+    __table_args__ = (Index("ix_cert_created_at", "created_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title: Mapped[str] = mapped_column(String(200))

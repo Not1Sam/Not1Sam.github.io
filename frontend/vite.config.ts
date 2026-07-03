@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import fs from 'fs'
 
-const version = fs.readFileSync('../VERSION', 'utf-8').trim()
+let version = 'dev';
+try {
+  version = fs.readFileSync('../VERSION', 'utf-8').trim();
+} catch {}
 
 export default defineConfig({
   plugins: [react()],
@@ -17,10 +20,16 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: 'hidden',
   },
   server: {
     port: 5173,
     host: true,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test-setup.ts',
+    css: true,
   },
 })

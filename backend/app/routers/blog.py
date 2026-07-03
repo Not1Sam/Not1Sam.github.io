@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from app.database import get_db
 from app.models.models import BlogPost
@@ -11,8 +11,15 @@ router = APIRouter(prefix="/api/blog", tags=["blog"])
 
 
 @router.get("", response_model=list[BlogPostResponse])
-async def list_posts(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(BlogPost).order_by(BlogPost.created_at.desc()))
+async def list_posts(
+    db: AsyncSession = Depends(get_db),
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+):
+    offset = (page - 1) * limit
+    result = await db.execute(
+        select(BlogPost).order_by(BlogPost.created_at.desc()).offset(offset).limit(limit)
+    )
     return result.scalars().all()
 
 

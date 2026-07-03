@@ -1,3 +1,5 @@
+import { SKILLS } from "../lib/skills";
+
 export function CV() {
   const experience = [
     {
@@ -16,12 +18,7 @@ export function CV() {
     },
   ];
 
-  const skills = {
-    languages: ["JavaScript", "TypeScript", "Python", "C++", "PHP", "C"],
-    frontend: ["React", "Next.js", "HTML5", "CSS3", "Tailwind CSS"],
-    backend: ["Node.js", "Express", "FastAPI", "Prisma", "REST APIs"],
-    devops: ["Docker", "Linux", "Nginx", "Git", "CI/CD"],
-  };
+  const skills = SKILLS;
 
   return (
     <main className="py-8 max-w-[900px]">

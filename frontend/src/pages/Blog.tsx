@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  created_at: string;
-}
-
-const API_BASE = import.meta.env.VITE_API_URL || "https://x7k9m2.bungus.fyi";
+import { Link } from "react-router-dom";
+import { API_BASE } from "../lib/constants";
+import type { BlogPost } from "../lib/types";
 
 export function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/blog`)
-      .then((r) => r.json())
+    const controller = new AbortController();
+    fetch(`${API_BASE}/api/blog`, { signal: controller.signal })
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to load posts");
+        return r.json();
+      })
       .then((d) => { setPosts(d); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch((e) => {
+        if (e.name !== "AbortError") {
+          setError(e.message);
+          setLoading(false);
+        }
+      });
+    return () => controller.abort();
   }, []);
 
   return (
@@ -35,11 +40,15 @@ export function Blog() {
 
         {loading ? (
           <div className="spinner" />
+        ) : error ? (
+          <div className="bento-box text-center py-12">
+            <p className="text-red-500">{error}</p>
+          </div>
         ) : posts.length === 0 ? (
           <div className="bento-box text-center py-12">
             <p className="text-secondary">
               No transmissions found. Head to the{" "}
-              <a href="/admin" className="fluo-text">Admin panel</a> to write the first log.
+              <Link to="/admin" className="fluo-text">Admin panel</Link> to write the first log.
             </p>
           </div>
         ) : (
@@ -59,9 +68,24 @@ export function Blog() {
                 </span>
                 <h2 className="text-[1.8rem] mt-2 mb-3 brand-font">{p.title}</h2>
                 <p className="text-secondary mb-6">{p.excerpt}</p>
-                <button className="px-6 py-2 bg-transparent border border-border text-primary cursor-pointer transition-all hover:border-secondary font-mono text-[0.85rem]">
-                  Read full log →
-                </button>
+                {expanded === p.id ? (
+                  <div>
+                    <div className="whitespace-pre-wrap text-[0.95rem] leading-relaxed mb-4">{p.content}</div>
+                    <button
+                      onClick={() => setExpanded(null)}
+                      className="px-6 py-2 bg-transparent border border-border text-primary cursor-pointer transition-all hover:border-secondary font-mono text-[0.85rem]"
+                    >
+                      Collapse ↑
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setExpanded(p.id)}
+                    className="px-6 py-2 bg-transparent border border-border text-primary cursor-pointer transition-all hover:border-secondary font-mono text-[0.85rem]"
+                  >
+                    Read full log →
+                  </button>
+                )}
               </article>
             ))}
           </div>

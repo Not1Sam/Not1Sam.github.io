@@ -21,12 +21,17 @@ export function ThemeSwitcher() {
   };
 
   const idx = themes.findIndex((t) => t.id === theme);
+  const buttonWidth = 100 / themes.length;
 
   return (
-    <div className="relative flex bg-border rounded-full p-1 w-[210px]">
+    <div
+      className="relative flex bg-border rounded-full p-1"
+      style={{ width: `${themes.length * 70}px` }}
+    >
       <div
-        className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc((100%-8px)/3)] bg-primary rounded-full transition-transform duration-300 z-10"
+        className="absolute top-1 left-1 h-[calc(100%-8px)] bg-primary rounded-full transition-transform duration-300 z-10"
         style={{
+          width: `calc(${buttonWidth}% - 6px)`,
           transform: `translateX(${idx >= 0 ? idx * 100 : 0}%)`,
           transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
@@ -35,7 +40,7 @@ export function ThemeSwitcher() {
         <button
           key={t.id}
           onClick={() => switchTheme(t.id)}
-          className={`relative z-20 flex-1 bg-transparent border-none font-[inherit] text-[0.75rem] font-semibold uppercase tracking-widest py-1.5 cursor-pointer transition-colors duration-300 min-w-[66px] ${
+          className={`relative z-20 flex-1 bg-transparent border-none font-[inherit] text-[0.75rem] font-semibold uppercase tracking-widest py-1.5 cursor-pointer transition-colors duration-300 ${
             theme === t.id ? "text-bg" : "text-secondary hover:text-primary"
           }`}
         >

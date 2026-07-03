@@ -5,9 +5,9 @@ from pathlib import Path
 class Settings(BaseSettings):
     APP_NAME: str = "Not1Sam Portfolio API"
     DEBUG: bool = False
-    SECRET_KEY: str = "change-me-in-production-use-openssl-rand-hex-32"
+    SECRET_KEY: str = ""
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
-    DATABASE_URL: str = "sqlite+aiosqlite:///./portfolio.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./data/portfolio.db"
     UPLOAD_DIR: Path = Path("uploads")
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024
     ADMIN_USERNAME: str = ""
@@ -25,4 +25,11 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if not settings.SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable must be set")
+if not settings.ADMIN_PASSWORD:
+    raise RuntimeError("ADMIN_PASSWORD environment variable must be set")
+
 settings.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+Path(settings.DATABASE_URL.split("///")[-1]).parent.mkdir(parents=True, exist_ok=True)

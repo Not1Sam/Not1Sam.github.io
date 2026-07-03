@@ -23,7 +23,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
-    gosu \
+    tini \
     wget
 
 COPY --from=deps /deps /usr/local
@@ -33,8 +33,8 @@ COPY . .
 
 RUN adduser --disabled-password --gecos '' appuser && \
     chown -R appuser:appuser $WORKDIR && \
-    mkdir -p $WORKDIR/uploads && \
-    chown -R appuser:appuser $WORKDIR/uploads
+    mkdir -p $WORKDIR/data $WORKDIR/uploads && \
+    chown -R appuser:appuser $WORKDIR/data $WORKDIR/uploads
 
 EXPOSE 8000
 
@@ -43,4 +43,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
 
 USER appuser
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["tini", "--"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

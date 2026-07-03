@@ -10,9 +10,11 @@ services:
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - DATABASE_URL=sqlite+aiosqlite:///./data/portfolio.db
       - DEBUG=false
     volumes:
-      - backend-data:/app/uploads
+      - backend-data:/app/data
+      - backend-uploads:/app/uploads
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8000/api/health"]
       interval: 30s
@@ -32,4 +34,6 @@ services:
 
 volumes:
   backend-data:
+    driver: local
+  backend-uploads:
     driver: local

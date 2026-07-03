@@ -12,7 +12,7 @@
   --color-accent: #ffffff;
   --color-fluo: #39ff14;
   --font-heading: 'Space Grotesk', sans-serif;
-  --font-mono: 'Space Grotesk', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-body: 'Inter', sans-serif;
 }
 
@@ -24,6 +24,7 @@
   --color-border: #e0e0e0;
   --color-border-hover: #b0b0b0;
   --color-accent: #000000;
+  --color-fluo: #0a7c07;
 }
 
 [data-theme="purple"] {
@@ -34,6 +35,7 @@
   --color-border: #231842;
   --color-border-hover: #3d2b70;
   --color-accent: #ffffff;
+  --color-fluo: #b388ff;
 }
 
 * {
@@ -52,10 +54,14 @@ body {
   min-height: 100vh;
   color: var(--color-primary);
   background-image:
-    linear-gradient(rgba(26, 26, 26, 0.4) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 26, 26, 0.4) 1px, transparent 1px);
+    linear-gradient(var(--grid-color, rgba(26, 26, 26, 0.4)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color, rgba(26, 26, 26, 0.4)) 1px, transparent 1px);
   background-size: 20px 20px;
   background-position: -1px -1px;
+}
+
+[data-theme="light"] body {
+  --grid-color: rgba(0, 0, 0, 0.08);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -193,4 +199,19 @@ a:hover {
   overflow: visible;
   clip: auto;
   white-space: normal;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

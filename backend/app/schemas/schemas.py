@@ -41,13 +41,6 @@ class BlogPostResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class CertificateCreate(BaseModel):
-    title: str = Field(..., min_length=1, max_length=200)
-    issuer: str = Field(..., min_length=1, max_length=200)
-    date: str = Field(..., max_length=20)
-    credential_url: str | None = None
-
-
 class CertificateResponse(BaseModel):
     id: str
     title: str

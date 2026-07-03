@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../lib/constants";
+import type { BlogPost } from "../lib/types";
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://x7k9m2.bungus.fyi";
-
-interface BlogPost {
+interface ContactMessage {
   id: string;
-  title: string;
-  excerpt: string;
-  content: string;
+  name: string;
+  email: string;
+  message: string;
   created_at: string;
 }
 
@@ -19,13 +19,15 @@ export function Admin() {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [toast, setToast] = useState("");
-  const [inbox, setInbox] = useState<any[]>([]);
+  const [inbox, setInbox] = useState<ContactMessage[]>([]);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("admin_token");
-    if (saved) setToken(saved);
+    if (saved) {
+      setToken(saved);
+    }
   }, []);
 
   useEffect(() => {
@@ -40,15 +42,29 @@ export function Admin() {
   const loadInbox = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/contact`, { headers: authHeaders });
-      if (res.ok) setInbox(await res.json());
-    } catch {}
+      if (res.ok) {
+        setInbox(await res.json());
+      } else if (res.status === 401) {
+        handleLogout();
+      }
+    } catch {
+      setToast("Failed to load inbox");
+      setTimeout(() => setToast(""), 3000);
+    }
   };
 
   const loadPosts = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/blog`);
-      if (res.ok) setPosts(await res.json());
-    } catch {}
+      if (res.ok) {
+        setPosts(await res.json());
+      } else if (res.status === 401) {
+        handleLogout();
+      }
+    } catch {
+      setToast("Failed to load posts");
+      setTimeout(() => setToast(""), 3000);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -100,8 +116,14 @@ export function Admin() {
         setToast(editingPost ? "Blog post updated!" : "Blog post published!");
         setTimeout(() => setToast(""), 3000);
         loadPosts();
+      } else {
+        setToast("Failed to save post");
+        setTimeout(() => setToast(""), 3000);
       }
-    } catch {}
+    } catch {
+      setToast("Connection failed");
+      setTimeout(() => setToast(""), 3000);
+    }
   };
 
   const handleEdit = (post: BlogPost) => {
@@ -114,11 +136,34 @@ export function Admin() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this post?")) return;
     try {
-      await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders });
-      setPosts(posts.filter((p) => p.id !== id));
-      setToast("Post deleted!");
+      const res = await fetch(`${API_BASE}/api/blog/${id}`, { method: "DELETE", headers: authHeaders });
+      if (res.ok) {
+        setPosts(posts.filter((p) => p.id !== id));
+        setToast("Post deleted!");
+        setTimeout(() => setToast(""), 3000);
+      }
+    } catch {
+      setToast("Failed to delete post");
       setTimeout(() => setToast(""), 3000);
-    } catch {}
+    }
+  };
+
+  const handleDeleteInbox = async (id: string) => {
+    if (!confirm("Delete this message?")) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/contact/${id}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      });
+      if (res.ok) {
+        setInbox(inbox.filter((m) => m.id !== id));
+        setToast("Message deleted!");
+        setTimeout(() => setToast(""), 3000);
+      }
+    } catch {
+      setToast("Failed to delete message");
+      setTimeout(() => setToast(""), 3000);
+    }
   };
 
   if (!token) {
@@ -180,11 +225,11 @@ export function Admin() {
               <h2 className="text-xl font-bold brand-font">{editingPost ? "Edit Blog Post" : "Publish Blog Post"}</h2>
               <div className="flex flex-col gap-2">
                 <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">POST TITLE</label>
-                <input required value={title} onChange={(e) => setTitle(e.target.value)} className="p-3 bg-transparent border border-border text-primary outline-none" />
+                <input required maxLength={200} value={title} onChange={(e) => setTitle(e.target.value)} className="p-3 bg-transparent border border-border text-primary outline-none" />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">SHORT EXCERPT</label>
-                <textarea required rows={2} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} className="p-3 bg-transparent border border-border text-primary outline-none resize-none" />
+                <textarea required rows={2} maxLength={500} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} className="p-3 bg-transparent border border-border text-primary outline-none resize-none" />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[0.85rem] uppercase tracking-widest text-secondary font-semibold">FULL CONTENT</label>
@@ -243,13 +288,7 @@ export function Admin() {
                       <div className="flex gap-4 items-center">
                         <span className="fluo-text text-[0.75rem] tracking-wider font-mono">{msg.created_at}</span>
                         <button
-                          onClick={async () => {
-                            await fetch(`${API_BASE}/api/contact/${msg.id}`, {
-                              method: "DELETE",
-                              headers: authHeaders,
-                            });
-                            setInbox(inbox.filter((m) => m.id !== msg.id));
-                          }}
+                          onClick={() => handleDeleteInbox(msg.id)}
                           className="bg-transparent text-red-500 border border-red-500 px-2 py-1 text-[0.75rem] cursor-pointer font-mono"
                         >
                           [ DELETE ]

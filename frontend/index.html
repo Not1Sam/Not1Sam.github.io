@@ -11,13 +11,28 @@
     <meta property="og:title" content="Not1Sam | Software Engineer Portfolio" />
     <meta property="og:description" content="Building clean, structured, purposeful software — from REST APIs to containerised infrastructure." />
     <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Not1Sam | Software Engineer Portfolio" />
+    <meta name="twitter:description" content="Building clean, structured, purposeful software — from REST APIs to containerised infrastructure." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>Not1Sam | Software Engineer</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <noscript>
+        <div style="padding:2rem;text-align:center;color:#39ff14;background:#000;min-height:100vh;font-family:monospace">
+          <h1>Not1Sam</h1>
+          <p>This site requires JavaScript to run.</p>
+        </div>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      }
+    </script>
   </body>
 </html>

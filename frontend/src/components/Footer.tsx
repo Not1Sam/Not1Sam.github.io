@@ -1,3 +1,5 @@
+import { GITHUB_USERNAME, LINKTREE } from "../lib/constants";
+
 export function Footer() {
   return (
     <footer role="contentinfo" className="animate-fade-in py-16 border-t border-border mt-16" style={{ animationDelay: "0.4s" }}>
@@ -6,7 +8,7 @@ export function Footer() {
       </h2>
       <div className="flex gap-6 mb-12">
         <a
-          href="https://linktr.ee/not1sam"
+          href={LINKTREE}
           target="_blank"
           rel="noreferrer"
           aria-label="Contact via Linktree"
@@ -15,7 +17,7 @@ export function Footer() {
           Let&apos;s talk →
         </a>
         <a
-          href="https://github.com/Not1Sam"
+          href={`https://github.com/${GITHUB_USERNAME}`}
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub profile"

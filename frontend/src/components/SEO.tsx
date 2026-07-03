@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { SITE_URL } from "../lib/constants";
 
 const SEO_DATA: Record<string, { title: string; description: string }> = {
   "/": {
@@ -61,7 +62,7 @@ export function SEO() {
     setMeta("og:title", data.title);
     setMeta("og:description", data.description);
     setMeta("og:type", "website");
-    setMeta("og:url", `https://not1sam.github.io${pathname}`);
+    setMeta("og:url", `${SITE_URL}${pathname}`);
   }, [pathname]);
 
   return null;
