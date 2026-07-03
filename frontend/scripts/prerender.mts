@@ -9,8 +9,8 @@ const routes = ['/', '/lab', '/projects', '/stack', '/contact', '/blog', '/certi
 
 const indexHtml = readFileSync(resolve(distDir, 'index.html'), 'utf-8');
 
-const jsMatch = indexHtml.match(/<script type="module" src="([^"]+)"><\/script>/);
-const cssMatches = [...indexHtml.matchAll(/<link rel="stylesheet" href="([^"]+)">/g)];
+const jsMatch = indexHtml.match(/<script type="module"[^>]*src="([^"]+)"[^>]*>/);
+const cssMatches = [...indexHtml.matchAll(/<link rel="stylesheet"[^>]*href="([^"]+)">/g)];
 
 const jsSrc = jsMatch ? jsMatch[1] : '';
 const cssLinks = cssMatches.map((m) => `<link rel="stylesheet" href="${m[1]}" />`).join('\n    ');
