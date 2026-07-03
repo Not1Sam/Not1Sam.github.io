@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_BASE = import.meta.env.VITE_API_URL || "https://84.8.221.29:8001";
+
 export function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -9,7 +11,7 @@ export function Contact() {
     e.preventDefault();
     setLoading(true);
     try {
-      await fetch("/api/contact", {
+      await fetch(`${API_BASE}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

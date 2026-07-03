@@ -106,27 +106,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update VERSION file
-        run: |
-          echo "${{ needs.prepare-version.outputs.version }}" > VERSION
-          echo "VERSION file updated to $(cat VERSION)"
-
-      - name: Update docker-compose.yml image tag
+      - name: Update VERSION and compose.env
         env:
           VERSION: ${{ needs.prepare-version.outputs.version }}
-          IMAGE_NAME: ${{ needs.prepare-version.outputs.image_name }}
         run: |
-          sed -i -E \
-            "s|(${IMAGE_NAME}):v[0-9]+\.[0-9]+\.[0-9]+|\1:${VERSION}|g" \
-            docker-compose.yml
-          echo "Updated docker-compose.yml:"
-          grep "image:" docker-compose.yml
+          echo "$VERSION" > VERSION
+          echo "VERSION=$VERSION" > compose.env
+          echo "VERSION: $(cat VERSION)"
+          echo "compose.env: $(cat compose.env)"
 
       - name: Commit version updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: bump version to ${{ needs.prepare-version.outputs.version }}"
-          file_pattern: VERSION docker-compose.yml
+          file_pattern: VERSION compose.env
 
       - name: Trigger Portainer Webhook
         run: |
