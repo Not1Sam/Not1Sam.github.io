@@ -1,16 +1,32 @@
 {
   "name": "Not1Sam | Software Engineer",
   "short_name": "Not1Sam",
-  "description": "Portfolio of Not1Sam, Software Engineer from Morocco",
+  "description": "Portfolio of Not1Sam — Software Engineer from Morocco building scalable systems with React, FastAPI, and Docker",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#000000",
+  "orientation": "portrait",
+  "background_color": "#03080a",
   "theme_color": "#39ff14",
+  "lang": "en-US",
+  "categories": ["technology", "productivity", "developer"],
   "icons": [
     {
       "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/og-image.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "/contact",
+    "method": "POST",
+    "enctype": "multipart/form-data"
+  }
 }

@@ -37,11 +37,34 @@ async def get_cv_file(db: AsyncSession = Depends(get_db)):
     return FileResponse(
         filepath,
         media_type="application/pdf",
-        filename=cv.original_name,
         headers={
+            "Content-Disposition": f'inline; filename="{cv.original_name}"',
             "X-Frame-Options": "SAMEORIGIN",
             "Content-Security-Policy": "frame-ancestors 'self' https://not1sam.github.io",
             "X-Content-Type-Options": "nosniff",
+            "Cache-Control": "public, max-age=300",
+            "Accept-Ranges": "bytes",
+        },
+    )
+
+
+@router.get("/download")
+async def download_cv(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(CV).order_by(CV.uploaded_at.desc()).limit(1))
+    cv = result.scalar_one_or_none()
+    if not cv:
+        raise HTTPException(status_code=404, detail="No CV found")
+    filepath = settings.UPLOAD_DIR / cv.filename
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="CV file not found")
+    return FileResponse(
+        filepath,
+        media_type="application/pdf",
+        filename=cv.original_name,
+        headers={
+            "Content-Disposition": f'attachment; filename="{cv.original_name}"',
+            "X-Content-Type-Options": "nosniff",
+            "Cache-Control": "no-cache",
         },
     )
 

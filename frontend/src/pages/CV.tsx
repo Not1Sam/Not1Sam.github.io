@@ -64,12 +64,23 @@ export function CV() {
               </button>
             </div>
           )}
-          {cv && <a href={`${API_BASE}${cv.file_path}`} target="_blank" rel="noreferrer" className="btn-outline text-[0.7rem] px-3 py-1.5">DOWNLOAD →</a>}
+          {cv && <a href={`${API_BASE}/api/cv/download`} target="_blank" rel="noreferrer" className="btn-outline text-[0.7rem] px-3 py-1.5">DOWNLOAD ↓</a>}
         </div>
 
         {viewMode === "embedded" && cv ? (
-          <div className="border border-border overflow-hidden bg-white" style={{ height: "calc(100vh - 280px)", minHeight: "400px" }}>
-            <iframe src={`${API_BASE}/api/cv/file#toolbar=1&navpanes=1&scrollbar=1`} className="w-full h-full border-none" title="CV PDF" />
+          <div className="border border-border overflow-hidden bg-white" style={{ height: "calc(100vh - 280px)", minHeight: "450px" }}>
+            <object
+              data={`${API_BASE}/api/cv/file#toolbar=1&navpanes=1&scrollbar=1&view=FitH`}
+              type="application/pdf"
+              className="w-full h-full"
+              aria-label="CV PDF Preview"
+            >
+              <iframe
+                src={`${API_BASE}/api/cv/file#toolbar=1&navpanes=1&scrollbar=1&view=FitH`}
+                className="w-full h-full border-none"
+                title="CV PDF Preview"
+              />
+            </object>
           </div>
         ) : (
           <div className="flex flex-col gap-8 md:gap-10">

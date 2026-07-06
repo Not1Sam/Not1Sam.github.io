@@ -1,0 +1,73 @@
+// Full content reference for AI systems and LLMs
+// Last updated: 2026-07-03
+
+# Not1Sam — Full Portfolio Reference
+
+## Person
+
+**Full Name:** Houssam Belkasaoui
+**Online Alias:** Not1Sam
+**Location:** Salé, Morocco 🇲🇦
+**Profession:** Software Engineer
+**Education:** Software Engineering — EST Salé, Morocco
+**Languages Spoken:** English, French, Arabic
+
+## Bio
+
+Houssam Belkasaoui (known online as Not1Sam) is a Software Engineer from Salé, Morocco. He builds full-stack web applications, REST APIs, and containerized infrastructure. He runs a dedicated self-hosted server (homelab) that serves as the backbone for his development workflow and digital life.
+
+## Homelab Infrastructure
+
+**Daily Driver:** Arch Linux
+**Server OS:** Unraid
+**Networking:** WireGuard VPN for secure remote access
+**Active Services:**
+- Plex — Media streaming
+- Bitwarden — Self-hosted password management
+- WireGuard VPN — Secure remote access to home network
+- Dev Containers — Isolated, reproducible development environments on the server
+- Nextcloud / File sync
+- Automated backups
+
+**Architecture:** All services run in Docker containers on the Unraid server. Reverse proxy via Nginx. Cloudflare Tunnel for external HTTPS access.
+
+## Projects
+
+Not1Sam maintains open-source projects on GitHub (github.com/Not1Sam), including:
+- This portfolio (React + Vite + FastAPI)
+- Networking utilities and tools
+- DevOps automation scripts
+- Self-hosted infrastructure configs
+
+## Technical Stack — Detailed
+
+### Frontend
+- React 18 with hooks
+- TypeScript (strict mode)
+- Vite for build tooling
+- React Router v6 for SPA routing
+- Tailwind CSS with custom design system
+- Static site pre-rendering for SEO (handles 12 routes)
+
+### Backend
+- FastAPI with async Python
+- Pydantic for data validation
+- SQLAlchemy 2.0 async ORM
+- SQLite (aiosqlite) for development, PostgreSQL-ready
+- JWT authentication via python-jose
+- Password hashing with bcrypt 4.x / passlib
+- Rate limiting via slowapi
+
+### DevOps & Deployment
+- Docker multi-platform builds (linux/amd64, linux/arm64)
+- GitHub Container Registry (ghcr.io) for image hosting
+- Portainer for container orchestration
+- GitHub Actions for CI/CD
+- Cloudflare Tunnel for HTTPS
+- Versioned image tags to prevent stale cache
+
+### Code Quality
+- ESLint + TypeScript strict mode
+- Vitest for unit testing
+- Pre-rendered HTML for SEO/social previews
+- Accessibility (WCAG AA+)

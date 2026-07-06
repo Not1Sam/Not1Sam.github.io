@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0a1a0a" stroke-width="0.5"/>
+    </pattern>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03080a"/>
+      <stop offset="100%" style="stop-color:#0a1a0a"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#39ff14;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#39ff14;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#39ff14;stop-opacity:0"/>
+    </linearGradient>
+    <filter id="glowEffect">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="0" y="0" width="1200" height="1" fill="url(#glow)" opacity="0.6"/>
+  <rect x="0" y="629" width="1200" height="1" fill="url(#glow)" opacity="0.4"/>
+  <text x="60" y="90" font-family="'JetBrains Mono', monospace" font-size="14" fill="#39ff14" letter-spacing="3" opacity="0.8">SYSTEM STATUS: ONLINE</text>
+  <text x="1140" y="90" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="14" fill="#888" letter-spacing="2">v2026.07</text>
+  <line x1="60" y1="110" x2="1140" y2="110" stroke="#39ff14" stroke-width="0.5" opacity="0.3"/>
+  <text x="60" y="260" font-family="'Space Grotesk', sans-serif" font-size="120" font-weight="700" fill="#ffffff" letter-spacing="-3">Not1Sam</text>
+  <text x="60" y="260" font-family="'Space Grotesk', sans-serif" font-size="120" font-weight="700" fill="#39ff14" letter-spacing="-3" opacity="0.15" filter="url(#glowEffect)">Not1Sam</text>
+  <text x="60" y="320" font-family="'Space Grotesk', sans-serif" font-size="36" font-weight="400" fill="#39ff14" letter-spacing="-1">[ software engineer ]</text>
+  <text x="60" y="420" font-family="'Inter', sans-serif" font-size="22" fill="#cccccc">Software Engineer · Networking Enthusiast · Homelaber</text>
+  <text x="60" y="455" font-family="'Inter', sans-serif" font-size="22" fill="#cccccc">Based in Morocco 🇲🇦</text>
+  <text x="60" y="510" font-family="'JetBrains Mono', monospace" font-size="16" fill="#888">React · TypeScript · FastAPI · Docker · PostgreSQL · Linux</text>
+  <line x1="60" y1="550" x2="1140" y2="550" stroke="#39ff14" stroke-width="0.5" opacity="0.3"/>
+  <text x="60" y="580" font-family="'JetBrains Mono', monospace" font-size="14" fill="#39ff14" letter-spacing="2">github.com/Not1Sam</text>
+  <text x="1140" y="580" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="14" fill="#888" letter-spacing="2">not1sam.github.io</text>
+  <text x="60" y="605" font-family="'JetBrains Mono', monospace" font-size="12" fill="#555" letter-spacing="1">> connect.establish()</text>
+</svg>

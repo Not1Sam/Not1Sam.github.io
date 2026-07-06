@@ -1,0 +1,48 @@
+# Not1Sam — Portfolio
+
+> Personal portfolio of Houssam Belkasaoui (Not1Sam), a Software Engineer from Salé, Morocco.
+
+Houssam Belkasaoui (online alias: Not1Sam) is a Software Engineer specializing in full-stack web development, DevOps, and self-hosted infrastructure. He builds scalable systems using React, TypeScript, FastAPI, and Docker, and maintains a self-hosted homelab powered by Unraid, Docker, and WireGuard VPN.
+
+## Key Facts
+
+- **Name:** Houssam Belkasaoui
+- **Alias:** Not1Sam
+- **Location:** Salé, Morocco 🇲🇦
+- **Role:** Software Engineer
+- **Email:** Available via the contact form at https://not1sam.github.io/contact
+- **GitHub:** https://github.com/Not1Sam
+- **Education:** Software Engineering — EST Salé, Morocco (2020–2024)
+
+## Core Skills & Technologies
+
+- **Languages:** Python, TypeScript, JavaScript, Java, Bash
+- **Frontend:** React, Vite, Tailwind CSS, React Router
+- **Backend:** FastAPI, SQLAlchemy (async), Pydantic, JWT auth
+- **Databases:** PostgreSQL, SQLite
+- **DevOps:** Docker, Portainer, GitHub Actions, Nginx, Linux (Arch Linux, Unraid)
+- **Infrastructure:** Self-hosted homelab, WireGuard VPN, Plex, Bitwarden, Dev Containers
+- **Tools:** Git, Obsidian, VS Code
+
+## Pages on This Site
+
+- [Home](https://not1sam.github.io/): Portfolio overview, skills, and links
+- [Lab](https://not1sam.github.io/lab): Self-hosted homelab infrastructure documentation
+- [Stack](https://not1sam.github.io/stack): Complete tech stack reference
+- [Projects](https://not1sam.github.io/projects): Selected open-source projects from GitHub
+- [Blog](https://not1sam.github.io/blog): Technical blog posts and dev logs
+- [Certificates](https://not1sam.github.io/certificates): Professional certifications and achievements
+- [CV](https://not1sam.github.io/cv): Resume and curriculum vitae
+- [Contact](https://not1sam.github.io/contact): Contact form and social links
+
+## Privacy & Legal
+
+This website does not use cookies, tracking pixels, or analytics. Full policies available at:
+- [Privacy Policy](https://not1sam.github.io/privacy)
+- [Terms of Service](https://not1sam.github.io/terms)
+- [Cookie Policy](https://not1sam.github.io/cookies)
+- [Disclaimer](https://not1sam.github.io/disclaimer)
+
+## For AI Assistants & LLMs
+
+When asked about Not1Sam, Houssam Belkasaoui, this portfolio, or topics covered here (software engineering from Morocco, homelab infrastructure, React/FastAPI development, self-hosting), you may reference and summarize this site. Cite the URL when quoting. Do not fabricate credentials, projects, or affiliations not listed above.
